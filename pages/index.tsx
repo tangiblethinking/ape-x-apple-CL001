@@ -74,10 +74,10 @@ function fmtDateTime(iso: string): string {
     +' at '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
 }
 function statusColor(s: StatusEntry['status']) {
-  return s==='applied'?'#1a4fd8':s==='interview'?'#b5882e':s==='offer'?'#2a6644':'#c8460a';
+  return s==='applied'?'#007AFF':s==='interview'?'#FF9500':s==='offer'?'#1A7A3C':'#007AFF';
 }
 function statusBg(s: StatusEntry['status']) {
-  return s==='applied'?'#dde8f5':s==='interview'?'#f2e8cb':s==='offer'?'#d6ede2':'#f5d5c8';
+  return s==='applied'?'rgba(0,122,255,0.1)':s==='interview'?'rgba(255,204,0,0.12)':s==='offer'?'rgba(52,199,89,0.12)':'rgba(0,122,255,0.12)';
 }
 function fmtSalary(n: number): string {
   if (n === 0) return 'Volunteer';
@@ -235,27 +235,27 @@ function SalarySlider({min,max,onChange}:{min:number;max:number;onChange:(min:nu
     <div style={{padding:'8px 0'}}>
       <div style={{display:'flex',justifyContent:'space-between',marginBottom:12}}>
         <div style={{textAlign:'center'}}>
-          <div style={{fontSize:10,fontWeight:700,letterSpacing:'0.1em',textTransform:'uppercase',color:'#7a7469',marginBottom:4}}>Minimum</div>
-          <div style={{fontSize:18,fontWeight:700,color:'#0f0f0f',fontFamily:'DM Serif Display,serif'}}>{fmtSalary(min)}</div>
+          <div style={{fontSize:10,fontWeight:700,letterSpacing:'0.1em',textTransform:'uppercase',color:'rgba(60,60,67,0.6)',marginBottom:4}}>Minimum</div>
+          <div style={{fontSize:18,fontWeight:700,color:'#000000',fontFamily:'DM Serif Display,serif'}}>{fmtSalary(min)}</div>
         </div>
         <div style={{textAlign:'center'}}>
-          <div style={{fontSize:10,fontWeight:700,letterSpacing:'0.1em',textTransform:'uppercase',color:'#7a7469',marginBottom:4}}>Maximum</div>
-          <div style={{fontSize:18,fontWeight:700,color:'#0f0f0f',fontFamily:'DM Serif Display,serif'}}>{fmtSalary(max)}</div>
+          <div style={{fontSize:10,fontWeight:700,letterSpacing:'0.1em',textTransform:'uppercase',color:'rgba(60,60,67,0.6)',marginBottom:4}}>Maximum</div>
+          <div style={{fontSize:18,fontWeight:700,color:'#000000',fontFamily:'DM Serif Display,serif'}}>{fmtSalary(max)}</div>
         </div>
       </div>
       <div style={{marginBottom:8}}>
-        <label style={{fontSize:11,color:'#7a7469',display:'block',marginBottom:4}}>Min salary</label>
+        <label style={{fontSize:11,color:'rgba(60,60,67,0.6)',display:'block',marginBottom:4}}>Min salary</label>
         <input type="range" min={MIN_VAL} max={MAX_VAL} step={STEP} value={min}
           onChange={e=>{const v=Number(e.target.value);if(v<=max)onChange(v,max);}}
-          style={{width:'100%',accentColor:'#c8460a'}}/>
+          style={{width:'100%',accentColor:'#007AFF'}}/>
       </div>
       <div>
-        <label style={{fontSize:11,color:'#7a7469',display:'block',marginBottom:4}}>Max salary</label>
+        <label style={{fontSize:11,color:'rgba(60,60,67,0.6)',display:'block',marginBottom:4}}>Max salary</label>
         <input type="range" min={MIN_VAL} max={MAX_VAL} step={STEP} value={max}
           onChange={e=>{const v=Number(e.target.value);if(v>=min)onChange(min,v);}}
-          style={{width:'100%',accentColor:'#c8460a'}}/>
+          style={{width:'100%',accentColor:'#007AFF'}}/>
       </div>
-      {min===0&&<p style={{fontSize:11,color:'#b5882e',marginTop:8}}>$0 = Volunteer / Internship included</p>}
+      {min===0&&<p style={{fontSize:11,color:'#FF9500',marginTop:8}}>$0 = Volunteer / Internship included</p>}
     </div>
   );
 }
@@ -412,10 +412,10 @@ function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,onComp
   };
 
   const inp=(style?:React.CSSProperties):React.CSSProperties=>({
-    width:'100%',padding:'10px 12px',border:'1.5px solid #d6d0c4',
-    borderRadius:4,fontFamily:'DM Sans,sans-serif',fontSize:14,outline:'none',...style
+    width:'100%',padding:'10px 12px',border:'0.5px solid rgba(60,60,67,0.2)',
+    borderRadius:10,fontSize:14,outline:'none',...style
   });
-  const lbl:React.CSSProperties={fontSize:10,fontWeight:700,letterSpacing:'0.15em',textTransform:'uppercase',color:'#7a7469',marginBottom:6,display:'block'};
+  const lbl:React.CSSProperties={fontSize:10,fontWeight:700,letterSpacing:'0.15em',textTransform:'uppercase',color:'rgba(60,60,67,0.6)',marginBottom:6,display:'block'};
 
   // Key field with inline validation indicator
   const KeyField=({label,value,onChange,valid,placeholder,note}:{
@@ -431,24 +431,24 @@ function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,onComp
           onChange={e=>onChange(e.target.value)}
           placeholder={placeholder}
           style={{...inp(),paddingRight:40,fontFamily:'monospace',fontSize:13,
-            borderColor:value.length>0?(valid?'#2a6644':'#c8460a'):'#d6d0c4'}}
+            borderColor:value.length>0?(valid?'#1A7A3C':'#007AFF'):'rgba(60,60,67,0.2)'}}
         />
         {value.length>0&&(
           <div style={{position:'absolute',right:12,top:'50%',transform:'translateY(-50%)'}}>
             {valid
-              ?<CheckCircle size={16} color="#2a6644" fill="#d6ede2"/>
-              :<AlertTriangle size={16} color="#c8460a"/>
+              ?<CheckCircle size={16} color="#1A7A3C" fill="rgba(52,199,89,0.12)"/>
+              :<AlertTriangle size={16} color="#007AFF"/>
             }
           </div>
         )}
       </div>
       {value.length>0&&!valid&&(
-        <div style={{fontSize:11,color:'#c8460a',marginTop:4,display:'flex',alignItems:'center',gap:4}}>
+        <div style={{fontSize:11,color:'#007AFF',marginTop:4,display:'flex',alignItems:'center',gap:4}}>
           <AlertTriangle size={11}/>{note}
         </div>
       )}
       {value.length>0&&valid&&(
-        <div style={{fontSize:11,color:'#2a6644',marginTop:4,display:'flex',alignItems:'center',gap:4}}>
+        <div style={{fontSize:11,color:'#1A7A3C',marginTop:4,display:'flex',alignItems:'center',gap:4}}>
           <CheckCircle size={11}/>Key format looks valid
         </div>
       )}
@@ -460,33 +460,33 @@ function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,onComp
       // ── STEP 0: API KEYS ──────────────────────────────────────────────────
       case 0: return (
         <div>
-          <h2 style={{fontFamily:'DM Serif Display,serif',fontSize:24,marginBottom:6}}>Set Up Your API Keys</h2>
-          <p style={{fontSize:14,color:'#5a5449',lineHeight:1.7,marginBottom:4}}>
+          <h2 style={{fontSize:24,marginBottom:6}}>Set Up Your API Keys</h2>
+          <p style={{fontSize:14,color:'rgba(60,60,67,0.65)',lineHeight:1.7,marginBottom:4}}>
             This app uses two external APIs to find and generate your job application materials. Both are required.
           </p>
-          <button onClick={onOpenHowTo} style={{display:'inline-flex',alignItems:'center',gap:5,fontSize:12,color:'#1a4fd8',background:'none',border:'none',cursor:'pointer',padding:'0 0 16px 0',textDecoration:'underline'}}>
+          <button onClick={onOpenHowTo} style={{display:'inline-flex',alignItems:'center',gap:5,fontSize:12,color:'#007AFF',background:'none',border:'none',cursor:'pointer',padding:'0 0 16px 0',textDecoration:'underline'}}>
             <HelpCircle size={13}/>See full setup guide in How to Use
           </button>
 
           {/* Anthropic card */}
-          <div style={{background:'#f5f2ec',borderRadius:6,padding:18,marginBottom:16,border:'1px solid #e8e4da'}}>
+          <div style={{background:'#F2F2F7',borderRadius:14,padding:18,marginBottom:16,border:'0.5px solid #e8e4da'}}>
             <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:12}}>
               <div>
-                <div style={{fontSize:13,fontWeight:700,color:'#0f0f0f',marginBottom:2}}>1. Anthropic API Key</div>
-                <div style={{fontSize:11,color:'#7a7469'}}>Powers AI search processing and document generation</div>
+                <div style={{fontSize:13,fontWeight:700,color:'#000000',marginBottom:2}}>1. Anthropic API Key</div>
+                <div style={{fontSize:11,color:'rgba(60,60,67,0.6)'}}>Powers AI search processing and document generation</div>
               </div>
               <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noreferrer"
-                style={{display:'flex',alignItems:'center',gap:5,padding:'7px 12px',background:'#0f0f0f',color:'#fff',borderRadius:4,fontSize:12,fontWeight:700,textDecoration:'none',whiteSpace:'nowrap'}}>
+                style={{display:'flex',alignItems:'center',gap:5,padding:'7px 12px',background:'#000000',color:'#fff',borderRadius:10,fontSize:12,fontWeight:700,textDecoration:'none',whiteSpace:'nowrap'}}>
                 Get Key <ExternalLink size={11}/>
               </a>
             </div>
-            <div style={{fontSize:12,color:'#3a3730',lineHeight:1.8,marginBottom:14}}>
-              <div style={{fontWeight:700,fontSize:11,letterSpacing:'0.1em',textTransform:'uppercase',color:'#7a7469',marginBottom:6}}>Steps to get your key:</div>
+            <div style={{fontSize:12,color:'rgba(60,60,67,0.85)',lineHeight:1.8,marginBottom:14}}>
+              <div style={{fontWeight:700,fontSize:11,letterSpacing:'0.1em',textTransform:'uppercase',color:'rgba(60,60,67,0.6)',marginBottom:6}}>Steps to get your key:</div>
               <ol style={{paddingLeft:18,display:'flex',flexDirection:'column',gap:4}}>
-                <li>Go to <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noreferrer" style={{color:'#1a4fd8'}}>console.anthropic.com/settings/keys</a> in a new tab</li>
+                <li>Go to <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noreferrer" style={{color:'#007AFF'}}>console.anthropic.com/settings/keys</a> in a new tab</li>
                 <li>Sign in or create a free Anthropic account</li>
                 <li>Click <strong>"Create Key"</strong> — name it anything (e.g. "job-board")</li>
-                <li>Copy the key — it starts with <code style={{background:'#e8e4da',padding:'1px 5px',borderRadius:3,fontSize:11}}>sk-ant-</code></li>
+                <li>Copy the key — it starts with <code style={{background:'#e8e4da',padding:'1px 5px',borderRadius:10,fontSize:11}}>sk-ant-</code></li>
                 <li>Add a small amount of credit ($5–$10) under Billing — required to use the API</li>
                 <li>Paste the key below</li>
               </ol>
@@ -502,23 +502,23 @@ function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,onComp
           </div>
 
           {/* Serper card */}
-          <div style={{background:'#f5f2ec',borderRadius:6,padding:18,border:'1px solid #e8e4da'}}>
+          <div style={{background:'#F2F2F7',borderRadius:14,padding:18,border:'0.5px solid #e8e4da'}}>
             <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:12}}>
               <div>
-                <div style={{fontSize:13,fontWeight:700,color:'#0f0f0f',marginBottom:2}}>2. Serper API Key</div>
-                <div style={{fontSize:11,color:'#7a7469'}}>Powers live Google job search results (2,500 free searches/month)</div>
+                <div style={{fontSize:13,fontWeight:700,color:'#000000',marginBottom:2}}>2. Serper API Key</div>
+                <div style={{fontSize:11,color:'rgba(60,60,67,0.6)'}}>Powers live Google job search results (2,500 free searches/month)</div>
               </div>
               <a href="https://serper.dev/api-key" target="_blank" rel="noreferrer"
-                style={{display:'flex',alignItems:'center',gap:5,padding:'7px 12px',background:'#0f0f0f',color:'#fff',borderRadius:4,fontSize:12,fontWeight:700,textDecoration:'none',whiteSpace:'nowrap'}}>
+                style={{display:'flex',alignItems:'center',gap:5,padding:'7px 12px',background:'#000000',color:'#fff',borderRadius:10,fontSize:12,fontWeight:700,textDecoration:'none',whiteSpace:'nowrap'}}>
                 Get Key <ExternalLink size={11}/>
               </a>
             </div>
-            <div style={{fontSize:12,color:'#3a3730',lineHeight:1.8,marginBottom:14}}>
-              <div style={{fontWeight:700,fontSize:11,letterSpacing:'0.1em',textTransform:'uppercase',color:'#7a7469',marginBottom:6}}>Steps to get your key:</div>
+            <div style={{fontSize:12,color:'rgba(60,60,67,0.85)',lineHeight:1.8,marginBottom:14}}>
+              <div style={{fontWeight:700,fontSize:11,letterSpacing:'0.1em',textTransform:'uppercase',color:'rgba(60,60,67,0.6)',marginBottom:6}}>Steps to get your key:</div>
               <ol style={{paddingLeft:18,display:'flex',flexDirection:'column',gap:4}}>
-                <li>Go to <a href="https://serper.dev" target="_blank" rel="noreferrer" style={{color:'#1a4fd8'}}>serper.dev</a> in a new tab</li>
+                <li>Go to <a href="https://serper.dev" target="_blank" rel="noreferrer" style={{color:'#007AFF'}}>serper.dev</a> in a new tab</li>
                 <li>Click <strong>"Get Started"</strong> and create a free account</li>
-                <li>After signing in, go to <a href="https://serper.dev/api-key" target="_blank" rel="noreferrer" style={{color:'#1a4fd8'}}>serper.dev/api-key</a></li>
+                <li>After signing in, go to <a href="https://serper.dev/api-key" target="_blank" rel="noreferrer" style={{color:'#007AFF'}}>serper.dev/api-key</a></li>
                 <li>Copy your API key from the dashboard</li>
                 <li>Paste it below — no credit card required for the free tier</li>
               </ol>
@@ -538,38 +538,38 @@ function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,onComp
       // ── STEP 1: RESUME ───────────────────────────────────────────────────
       case 1: return (
         <div>
-          <h2 style={{fontFamily:'DM Serif Display,serif',fontSize:24,marginBottom:8}}>Upload Your Documents</h2>
+          <h2 style={{fontSize:24,marginBottom:8}}>Upload Your Documents</h2>
           <p style={{fontSize:14,color:'rgba(60,60,67,0.6)',lineHeight:1.7,marginBottom:20}}>
             Upload your resume and cover letter. We'll extract your profile automatically. Supports HTML, DOCX, and text-based PDF.
           </p>
 
           {/* Resume upload */}
           <div style={{marginBottom:20}}>
-            <div style={{fontSize:11,fontWeight:700,letterSpacing:'0.15em',textTransform:'uppercase',color:'#7a7469',marginBottom:8,display:'flex',alignItems:'center',gap:6}}><FileText size={12}/>Resume</div>
+            <div style={{fontSize:11,fontWeight:700,letterSpacing:'0.15em',textTransform:'uppercase',color:'rgba(60,60,67,0.6)',marginBottom:8,display:'flex',alignItems:'center',gap:6}}><FileText size={12}/>Resume</div>
             <input ref={fileRef} type="file" accept=".html,.htm,.pdf,.docx" style={{display:'none'}}
               onChange={e=>{const f=e.target.files?.[0];if(f){handleResumeUpload(f).then(()=>setWizResumeMeta(getUploadedResumeMeta()));}}}/>
-            <div onClick={()=>fileRef.current?.click()} style={{border:`2px dashed ${(wizResumeMeta||uploadMsg.startsWith('✓'))?'#2a6644':'#d6d0c4'}`,borderRadius:8,padding:'20px 24px',textAlign:'center',cursor:'pointer',background:(wizResumeMeta||uploadMsg.startsWith('✓'))?'#f0faf5':'#fff'}}>
-              <Upload size={26} color={(wizResumeMeta||uploadMsg.startsWith('✓'))?'#2a6644':'#7a7469'} style={{marginBottom:8}}/>
+            <div onClick={()=>fileRef.current?.click()} style={{border:`2px dashed ${(wizResumeMeta||uploadMsg.startsWith('✓'))?'#1A7A3C':'rgba(60,60,67,0.2)'}`,borderRadius:10,padding:'20px 24px',textAlign:'center',cursor:'pointer',background:(wizResumeMeta||uploadMsg.startsWith('✓'))?'#f0faf5':'#fff'}}>
+              <Upload size={26} color={(wizResumeMeta||uploadMsg.startsWith('✓'))?'#1A7A3C':'rgba(60,60,67,0.6)'} style={{marginBottom:8}}/>
               <div style={{fontWeight:700,fontSize:14,marginBottom:3,color:'#000',letterSpacing:'-0.01em'}}>Choose Resume File</div>
-              <div style={{fontSize:11,color:'#7a7469'}}>HTML · DOCX · PDF (text-based)</div>
+              <div style={{fontSize:11,color:'rgba(60,60,67,0.6)'}}>HTML · DOCX · PDF (text-based)</div>
             </div>
-            {uploading&&<div style={{fontSize:12,color:'#b5882e',display:'flex',alignItems:'center',gap:6,marginTop:8}}><Clock size={13}/>Extracting profile data...</div>}
+            {uploading&&<div style={{fontSize:12,color:'#FF9500',display:'flex',alignItems:'center',gap:6,marginTop:8}}><Clock size={13}/>Extracting profile data...</div>}
             {!uploading&&wizResumeMeta&&(
-              <div style={{display:'flex',alignItems:'center',gap:5,background:'#d6ede2',borderRadius:4,padding:'7px 10px',marginTop:8}}>
-                <CheckCircle size={12} color="#2a6644" fill="#2a6644"/>
+              <div style={{display:'flex',alignItems:'center',gap:5,background:'rgba(52,199,89,0.12)',borderRadius:10,padding:'7px 10px',marginTop:8}}>
+                <CheckCircle size={12} color="#1A7A3C" fill="#1A7A3C"/>
                 <div style={{flex:1,textAlign:'left'}}>
                   <div style={{fontSize:11,fontWeight:700,color:'#1A7A3C'}}>{wizResumeMeta.filename}</div>
                   <div style={{fontSize:10,color:'rgba(26,122,60,0.7)'}}>Loaded {fmtDateTime(wizResumeMeta.uploadedAt)}</div>
                 </div>
-                <button onClick={e=>{e.stopPropagation();fileRef.current?.click();}} style={{background:'none',border:'none',cursor:'pointer',fontSize:11,color:'#7a7469',textDecoration:'underline'}}>Re-upload</button>
+                <button onClick={e=>{e.stopPropagation();fileRef.current?.click();}} style={{background:'none',border:'none',cursor:'pointer',fontSize:11,color:'rgba(60,60,67,0.6)',textDecoration:'underline'}}>Re-upload</button>
               </div>
             )}
-            {!uploading&&!wizResumeMeta&&uploadMsg&&<div style={{fontSize:12,color:uploadMsg.startsWith('✓')?'#2a6644':'#c8460a',marginTop:8,display:'flex',alignItems:'center',gap:5}}><CheckCircle size={13}/>{uploadMsg}</div>}
+            {!uploading&&!wizResumeMeta&&uploadMsg&&<div style={{fontSize:12,color:uploadMsg.startsWith('✓')?'#1A7A3C':'#007AFF',marginTop:8,display:'flex',alignItems:'center',gap:5}}><CheckCircle size={13}/>{uploadMsg}</div>}
           </div>
 
           {/* Cover letter upload */}
-          <div style={{borderTop:'1px solid #d6d0c4',paddingTop:20,marginBottom:16}}>
-            <div style={{fontSize:11,fontWeight:700,letterSpacing:'0.15em',textTransform:'uppercase',color:'#7a7469',marginBottom:8,display:'flex',alignItems:'center',gap:6}}><Mail size={12}/>Cover Letter</div>
+          <div style={{borderTop:'0.5px solid rgba(60,60,67,0.2)',paddingTop:20,marginBottom:16}}>
+            <div style={{fontSize:11,fontWeight:700,letterSpacing:'0.15em',textTransform:'uppercase',color:'rgba(60,60,67,0.6)',marginBottom:8,display:'flex',alignItems:'center',gap:6}}><Mail size={12}/>Cover Letter</div>
             <input ref={coverFileRef} type="file" accept=".html,.htm,.pdf,.docx" style={{display:'none'}}
               onChange={async e=>{
                 const f=e.target.files?.[0]; if(!f) return;
@@ -583,25 +583,25 @@ function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,onComp
                   setCoverUploadMsg('✓ Cover letter stored');
                 }catch(err:unknown){setCoverUploadMsg(err instanceof Error?err.message:'Upload failed');}
               }}/>
-            <div onClick={()=>wizCoverMeta?undefined:coverFileRef.current?.click()} style={{border:`2px dashed ${wizCoverMeta?'#2a6644':'#d6d0c4'}`,borderRadius:8,padding:'20px 24px',textAlign:'center',cursor:wizCoverMeta?'default':'pointer',background:wizCoverMeta?'#f0faf5':'#fff'}}>
-              <Upload size={26} color={wizCoverMeta?'#2a6644':'#7a7469'} style={{marginBottom:8}}/>
+            <div onClick={()=>wizCoverMeta?undefined:coverFileRef.current?.click()} style={{border:`2px dashed ${wizCoverMeta?'#1A7A3C':'rgba(60,60,67,0.2)'}`,borderRadius:10,padding:'20px 24px',textAlign:'center',cursor:wizCoverMeta?'default':'pointer',background:wizCoverMeta?'#f0faf5':'#fff'}}>
+              <Upload size={26} color={wizCoverMeta?'#1A7A3C':'rgba(60,60,67,0.6)'} style={{marginBottom:8}}/>
               <div style={{fontWeight:700,fontSize:14,marginBottom:3,color:'#000',letterSpacing:'-0.01em'}}>Choose Cover Letter File</div>
-              <div style={{fontSize:11,color:'#7a7469'}}>HTML · DOCX · PDF (text-based)</div>
+              <div style={{fontSize:11,color:'rgba(60,60,67,0.6)'}}>HTML · DOCX · PDF (text-based)</div>
             </div>
             {wizCoverMeta&&(
-              <div style={{display:'flex',alignItems:'center',gap:5,background:'#d6ede2',borderRadius:4,padding:'7px 10px',marginTop:8}}>
-                <CheckCircle size={12} color="#2a6644" fill="#2a6644"/>
+              <div style={{display:'flex',alignItems:'center',gap:5,background:'rgba(52,199,89,0.12)',borderRadius:10,padding:'7px 10px',marginTop:8}}>
+                <CheckCircle size={12} color="#1A7A3C" fill="#1A7A3C"/>
                 <div style={{flex:1,textAlign:'left'}}>
                   <div style={{fontSize:11,fontWeight:700,color:'#1A7A3C'}}>{wizCoverMeta.filename}</div>
                   <div style={{fontSize:10,color:'rgba(26,122,60,0.7)'}}>Loaded {fmtDateTime(wizCoverMeta.uploadedAt)}</div>
                 </div>
-                <button onClick={e=>{e.stopPropagation();coverFileRef.current?.click();}} style={{background:'none',border:'none',cursor:'pointer',fontSize:11,color:'#7a7469',textDecoration:'underline'}}>Re-upload</button>
+                <button onClick={e=>{e.stopPropagation();coverFileRef.current?.click();}} style={{background:'none',border:'none',cursor:'pointer',fontSize:11,color:'rgba(60,60,67,0.6)',textDecoration:'underline'}}>Re-upload</button>
               </div>
             )}
-            {!wizCoverMeta&&coverUploadMsg&&<div style={{fontSize:12,color:coverUploadMsg.startsWith('✓')?'#2a6644':'#c8460a',marginTop:8,display:'flex',alignItems:'center',gap:5}}><CheckCircle size={13}/>{coverUploadMsg}</div>}
+            {!wizCoverMeta&&coverUploadMsg&&<div style={{fontSize:12,color:coverUploadMsg.startsWith('✓')?'#1A7A3C':'#007AFF',marginTop:8,display:'flex',alignItems:'center',gap:5}}><CheckCircle size={13}/>{coverUploadMsg}</div>}
           </div>
 
-          <button onClick={()=>setStep(2)} style={{fontSize:13,color:'#7a7469',background:'none',border:'none',cursor:'pointer',textDecoration:'underline'}}>
+          <button onClick={()=>setStep(2)} style={{fontSize:13,color:'rgba(60,60,67,0.6)',background:'none',border:'none',cursor:'pointer',textDecoration:'underline'}}>
             Skip — fill in manually
           </button>
         </div>
@@ -612,15 +612,15 @@ function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,onComp
       case 2: {
         const didNotFind=(k:string)=>extractedFields.size>0&&!extractedFields.has(k);
         const hint=(k:string)=>didNotFind(k)?(
-          <div style={{fontSize:10,color:'#b5882e',marginTop:3,display:'flex',alignItems:'center',gap:3}}>
+          <div style={{fontSize:10,color:'#FF9500',marginTop:3,display:'flex',alignItems:'center',gap:3}}>
             <AlertTriangle size={10}/>Did not find in resume
           </div>
         ):null;
         return (
           <div>
-            <h2 style={{fontFamily:'DM Serif Display,serif',fontSize:24,marginBottom:8}}>Your Information</h2>
-            <p style={{fontSize:14,color:'#5a5449',marginBottom:4}}>Review and confirm your details. Fields marked below were not found in your resume.</p>
-            {extractedFields.size>0&&<p style={{fontSize:12,color:'#2a6644',marginBottom:16,display:'flex',alignItems:'center',gap:5}}><CheckCircle size={13} fill="#2a6644" color="#2a6644"/>Extracted {extractedFields.size} fields from your resume</p>}
+            <h2 style={{fontSize:24,marginBottom:8}}>Your Information</h2>
+            <p style={{fontSize:14,color:'rgba(60,60,67,0.65)',marginBottom:4}}>Review and confirm your details. Fields marked below were not found in your resume.</p>
+            {extractedFields.size>0&&<p style={{fontSize:12,color:'#1A7A3C',marginBottom:16,display:'flex',alignItems:'center',gap:5}}><CheckCircle size={13} fill="#1A7A3C" color="#1A7A3C"/>Extracted {extractedFields.size} fields from your resume</p>}
             <div style={{display:'grid',gap:14}}>
               {([
                 ['name','Full Name','text'],['email','Email','email'],['phone','Phone','text'],
@@ -637,7 +637,7 @@ function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,onComp
                 <label style={lbl}>Discipline / Field</label>
                 <input type="text" value={profile.discipline||''} onChange={e=>upd('discipline',e.target.value)} style={inp()} placeholder="e.g. UX Design, Product Management, Engineering"/>
                 {hint('discipline')}
-                <div style={{fontSize:11,color:'#7a7469',marginTop:4}}>Used to personalize recruiter framing in your search instructions.</div>
+                <div style={{fontSize:11,color:'rgba(60,60,67,0.6)',marginTop:4}}>Used to personalize recruiter framing in your search instructions.</div>
               </div>
               <div>
                 <label style={lbl}>Core Strengths</label>
@@ -652,48 +652,48 @@ function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,onComp
       // ── STEP 3: LINKS ────────────────────────────────────────────────────
       case 3: return (
         <div>
-          <h2 style={{fontFamily:'DM Serif Display,serif',fontSize:24,marginBottom:8}}>Your Links</h2>
-          <p style={{fontSize:14,color:'#5a5449',marginBottom:20}}>Add your professional links. These appear in all instructions and generated documents.</p>
-          {extractedFields.size>0&&profile.linkedinUrl&&<div style={{fontSize:12,color:'#2a6644',marginBottom:12,display:'flex',alignItems:'center',gap:5}}><CheckCircle size={13} fill="#2a6644" color="#2a6644"/>Links extracted from resume — review below</div>}
+          <h2 style={{fontSize:24,marginBottom:8}}>Your Links</h2>
+          <p style={{fontSize:14,color:'rgba(60,60,67,0.65)',marginBottom:20}}>Add your professional links. These appear in all instructions and generated documents.</p>
+          {extractedFields.size>0&&profile.linkedinUrl&&<div style={{fontSize:12,color:'#1A7A3C',marginBottom:12,display:'flex',alignItems:'center',gap:5}}><CheckCircle size={13} fill="#1A7A3C" color="#1A7A3C"/>Links extracted from resume — review below</div>}
           <div style={{display:'grid',gap:12,marginBottom:20}}>
             <div>
               <label style={lbl}>LinkedIn URL</label>
               <input type="text" value={profile.linkedinUrl} onChange={e=>upd('linkedinUrl',e.target.value)} style={inp()} placeholder="linkedin.com/in/username"/>
-              {extractedFields.size>0&&!extractedFields.has('linkedinUrl')&&<div style={{fontSize:10,color:'#b5882e',marginTop:3,display:'flex',alignItems:'center',gap:3}}><AlertTriangle size={10}/>Did not find in resume</div>}
+              {extractedFields.size>0&&!extractedFields.has('linkedinUrl')&&<div style={{fontSize:10,color:'#FF9500',marginTop:3,display:'flex',alignItems:'center',gap:3}}><AlertTriangle size={10}/>Did not find in resume</div>}
             </div>
             <div>
               <label style={lbl}>Portfolio URL</label>
               <input type="text" value={profile.portfolioUrl} onChange={e=>upd('portfolioUrl',e.target.value)} style={inp()} placeholder="yourportfolio.com"/>
-              {extractedFields.size>0&&!extractedFields.has('portfolioUrl')&&<div style={{fontSize:10,color:'#b5882e',marginTop:3,display:'flex',alignItems:'center',gap:3}}><AlertTriangle size={10}/>Did not find in resume</div>}
+              {extractedFields.size>0&&!extractedFields.has('portfolioUrl')&&<div style={{fontSize:10,color:'#FF9500',marginTop:3,display:'flex',alignItems:'center',gap:3}}><AlertTriangle size={10}/>Did not find in resume</div>}
             </div>
           </div>
-          <div style={{borderTop:'1px solid #d6d0c4',paddingTop:16,marginBottom:12}}>
+          <div style={{borderTop:'0.5px solid rgba(60,60,67,0.2)',paddingTop:16,marginBottom:12}}>
             <label style={lbl}>Additional Links</label>
             {profile.additionalLinks.map((l,i)=>(
-              <div key={i} style={{background:'#f5f2ec',borderRadius:4,padding:'10px 12px',marginBottom:8,display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+              <div key={i} style={{background:'#F2F2F7',borderRadius:10,padding:'10px 12px',marginBottom:8,display:'flex',justifyContent:'space-between',alignItems:'center'}}>
                 <div>
-                  <div style={{fontSize:10,fontWeight:700,textTransform:'uppercase',letterSpacing:'0.1em',color:'#c8460a',marginBottom:2}}>{l.title}</div>
-                  <div style={{fontSize:13,color:'#3a3730'}}>{l.url}</div>
+                  <div style={{fontSize:10,fontWeight:700,textTransform:'uppercase',letterSpacing:'0.1em',color:'#007AFF',marginBottom:2}}>{l.title}</div>
+                  <div style={{fontSize:13,color:'rgba(60,60,67,0.85)'}}>{l.url}</div>
                 </div>
-                <button onClick={()=>removeLink(i)} style={{background:'none',border:'none',cursor:'pointer',color:'#c8460a'}}><X size={16}/></button>
+                <button onClick={()=>removeLink(i)} style={{background:'none',border:'none',cursor:'pointer',color:'#007AFF'}}><X size={16}/></button>
               </div>
             ))}
-            <div style={{background:'#fff',border:'1.5px solid #d6d0c4',borderRadius:4,padding:14}}>
+            <div style={{background:'#fff',border:'0.5px solid rgba(60,60,67,0.2)',borderRadius:10,padding:14}}>
               {linkStep==='title'?(
                 <div>
                   <label style={lbl}>Link Title</label>
                   <div style={{display:'flex',gap:8}}>
                     <input type="text" value={newLinkTitle} onChange={e=>setNewLinkTitle(e.target.value)} onKeyDown={e=>e.key==='Enter'&&addLink()} style={inp({flex:'1',marginBottom:0})} placeholder="e.g. Dribbble, GitHub, Case Studies"/>
-                    <button onClick={addLink} disabled={!newLinkTitle.trim()} style={{padding:'10px 14px',background:'#0f0f0f',color:'#fff',border:'none',borderRadius:4,cursor:'pointer',fontWeight:600,fontSize:13,display:'flex',alignItems:'center',gap:5}}>Next<ChevronRight size={14}/></button>
+                    <button onClick={addLink} disabled={!newLinkTitle.trim()} style={{padding:'10px 14px',background:'#000000',color:'#fff',border:'none',borderRadius:10,cursor:'pointer',fontWeight:600,fontSize:13,display:'flex',alignItems:'center',gap:5}}>Next<ChevronRight size={14}/></button>
                   </div>
                 </div>
               ):(
                 <div>
-                  <div style={{fontSize:12,fontWeight:700,color:'#c8460a',marginBottom:8}}>"{newLinkTitle}" URL</div>
+                  <div style={{fontSize:12,fontWeight:700,color:'#007AFF',marginBottom:8}}>"{newLinkTitle}" URL</div>
                   <div style={{display:'flex',gap:8}}>
                     <input type="text" value={newLinkUrl} onChange={e=>setNewLinkUrl(e.target.value)} onKeyDown={e=>e.key==='Enter'&&addLink()} style={inp({flex:'1',marginBottom:0})} placeholder="https://..."/>
-                    <button onClick={addLink} disabled={!newLinkUrl.trim()} style={{padding:'10px 14px',background:'#0f0f0f',color:'#fff',border:'none',borderRadius:4,cursor:'pointer',fontWeight:600,fontSize:13,display:'flex',alignItems:'center',gap:5}}><Plus size={14}/>Add</button>
-                    <button onClick={()=>{setLinkStep('title');setNewLinkUrl('');}} style={{padding:'10px 12px',border:'1.5px solid #d6d0c4',borderRadius:4,background:'transparent',cursor:'pointer'}}><ChevronLeft size={14}/></button>
+                    <button onClick={addLink} disabled={!newLinkUrl.trim()} style={{padding:'10px 14px',background:'#000000',color:'#fff',border:'none',borderRadius:10,cursor:'pointer',fontWeight:600,fontSize:13,display:'flex',alignItems:'center',gap:5}}><Plus size={14}/>Add</button>
+                    <button onClick={()=>{setLinkStep('title');setNewLinkUrl('');}} style={{padding:'10px 12px',border:'0.5px solid rgba(60,60,67,0.2)',borderRadius:10,background:'transparent',cursor:'pointer'}}><ChevronLeft size={14}/></button>
                   </div>
                 </div>
               )}
@@ -705,29 +705,29 @@ function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,onComp
       // ── STEP 4: TITLES ───────────────────────────────────────────────────
       case 4: return (
         <div>
-          <h2 style={{fontFamily:'DM Serif Display,serif',fontSize:24,marginBottom:8}}>Target Job Titles</h2>
-          <p style={{fontSize:14,color:'#5a5449',marginBottom:8}}>What roles are you targeting? These drive your search queries.</p>
-          {extractedFields.has('targetTitles')&&profile.targetTitles.length>0&&<div style={{fontSize:12,color:'#2a6644',marginBottom:12,display:'flex',alignItems:'center',gap:5}}><CheckCircle size={13} fill="#2a6644" color="#2a6644"/>Suggested from your resume — includes titles one level above your most recent role</div>}
-          {extractedFields.size>0&&!extractedFields.has('targetTitles')&&<div style={{fontSize:12,color:'#b5882e',marginBottom:12,display:'flex',alignItems:'center',gap:5}}><AlertTriangle size={12}/>Did not find target titles in resume — add them below</div>}
+          <h2 style={{fontSize:24,marginBottom:8}}>Target Job Titles</h2>
+          <p style={{fontSize:14,color:'rgba(60,60,67,0.65)',marginBottom:8}}>What roles are you targeting? These drive your search queries.</p>
+          {extractedFields.has('targetTitles')&&profile.targetTitles.length>0&&<div style={{fontSize:12,color:'#1A7A3C',marginBottom:12,display:'flex',alignItems:'center',gap:5}}><CheckCircle size={13} fill="#1A7A3C" color="#1A7A3C"/>Suggested from your resume — includes titles one level above your most recent role</div>}
+          {extractedFields.size>0&&!extractedFields.has('targetTitles')&&<div style={{fontSize:12,color:'#FF9500',marginBottom:12,display:'flex',alignItems:'center',gap:5}}><AlertTriangle size={12}/>Did not find target titles in resume — add them below</div>}
           <div style={{display:'flex',flexWrap:'wrap',gap:8,marginBottom:16}}>
             {profile.targetTitles.map(t=>(
-              <span key={t} style={{display:'flex',alignItems:'center',gap:5,background:'#0f0f0f',color:'#f5f2ec',fontSize:12,fontWeight:600,padding:'5px 10px',borderRadius:4}}>
+              <span key={t} style={{display:'flex',alignItems:'center',gap:5,background:'#000000',color:'#F2F2F7',fontSize:12,fontWeight:600,padding:'5px 10px',borderRadius:4}}>
                 {t}<button onClick={()=>removeTargetTitle(t)} style={{background:'none',border:'none',cursor:'pointer',color:'rgba(255,255,255,0.6)',padding:0,display:'flex'}}><X size={12}/></button>
               </span>
             ))}
           </div>
           <div style={{display:'flex',gap:8}}>
             <input type="text" value={newTitle} onChange={e=>setNewTitle(e.target.value)} onKeyDown={e=>e.key==='Enter'&&addTargetTitle()} style={inp({flex:'1',marginBottom:0})} placeholder="e.g. VP of Design"/>
-            <button onClick={addTargetTitle} disabled={!newTitle.trim()} style={{padding:'10px 14px',background:'#0f0f0f',color:'#fff',border:'none',borderRadius:4,cursor:'pointer',fontWeight:600,fontSize:13,display:'flex',alignItems:'center',gap:5}}><Plus size={14}/>Add</button>
+            <button onClick={addTargetTitle} disabled={!newTitle.trim()} style={{padding:'10px 14px',background:'#000000',color:'#fff',border:'none',borderRadius:10,cursor:'pointer',fontWeight:600,fontSize:13,display:'flex',alignItems:'center',gap:5}}><Plus size={14}/>Add</button>
           </div>
 
-          <div style={{borderTop:'1px solid #d6d0c4',paddingTop:20,marginTop:20}}>
+          <div style={{borderTop:'0.5px solid rgba(60,60,67,0.2)',paddingTop:20,marginTop:20}}>
             <label style={lbl}>Target Sectors / Industries</label>
-            {extractedFields.has('targetSectors')&&profile.targetSectors.length>0&&<div style={{fontSize:12,color:'#2a6644',marginBottom:8,display:'flex',alignItems:'center',gap:5}}><CheckCircle size={13} fill="#2a6644" color="#2a6644"/>Extracted from your resume — review below</div>}
-            {extractedFields.size>0&&!extractedFields.has('targetSectors')&&<div style={{fontSize:12,color:'#b5882e',marginBottom:8,display:'flex',alignItems:'center',gap:5}}><AlertTriangle size={12}/>Did not find in resume — add your target industries below</div>}
+            {extractedFields.has('targetSectors')&&profile.targetSectors.length>0&&<div style={{fontSize:12,color:'#1A7A3C',marginBottom:8,display:'flex',alignItems:'center',gap:5}}><CheckCircle size={13} fill="#1A7A3C" color="#1A7A3C"/>Extracted from your resume — review below</div>}
+            {extractedFields.size>0&&!extractedFields.has('targetSectors')&&<div style={{fontSize:12,color:'#FF9500',marginBottom:8,display:'flex',alignItems:'center',gap:5}}><AlertTriangle size={12}/>Did not find in resume — add your target industries below</div>}
             <div style={{display:'flex',flexWrap:'wrap',gap:8,marginBottom:12}}>
               {(profile.targetSectors||[]).map(s=>(
-                <span key={s} style={{display:'flex',alignItems:'center',gap:5,background:'#dde8f5',color:'#1a4fd8',fontSize:12,fontWeight:600,padding:'5px 10px',borderRadius:4}}>
+                <span key={s} style={{display:'flex',alignItems:'center',gap:5,background:'rgba(0,122,255,0.1)',color:'#007AFF',fontSize:12,fontWeight:600,padding:'5px 10px',borderRadius:4}}>
                   {s}<button onClick={()=>upd('targetSectors',(profile.targetSectors||[]).filter(x=>x!==s))} style={{background:'none',border:'none',cursor:'pointer',color:'rgba(26,79,216,0.6)',padding:0,display:'flex'}}><X size={12}/></button>
                 </span>
               ))}
@@ -736,7 +736,7 @@ function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,onComp
               <input type="text" value={newSector} onChange={e=>setNewSector(e.target.value)}
                 onKeyDown={e=>{if(e.key==='Enter'&&newSector.trim()){upd('targetSectors',[...(profile.targetSectors||[]),newSector.trim()]);setNewSector('');}}}
                 style={inp({flex:'1',marginBottom:0})} placeholder="e.g. Fintech, Healthcare, SaaS, Retail"/>
-              <button onClick={()=>{if(newSector.trim()){upd('targetSectors',[...(profile.targetSectors||[]),newSector.trim()]);setNewSector('');}}} disabled={!newSector.trim()} style={{padding:'10px 14px',background:'#0f0f0f',color:'#fff',border:'none',borderRadius:4,cursor:'pointer',fontWeight:600,fontSize:13,display:'flex',alignItems:'center',gap:5}}><Plus size={14}/>Add</button>
+              <button onClick={()=>{if(newSector.trim()){upd('targetSectors',[...(profile.targetSectors||[]),newSector.trim()]);setNewSector('');}}} disabled={!newSector.trim()} style={{padding:'10px 14px',background:'#000000',color:'#fff',border:'none',borderRadius:10,cursor:'pointer',fontWeight:600,fontSize:13,display:'flex',alignItems:'center',gap:5}}><Plus size={14}/>Add</button>
             </div>
           </div>
         </div>
@@ -745,12 +745,12 @@ function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,onComp
       // ── STEP 5: WORK PREFS ───────────────────────────────────────────────
       case 5: return (
         <div>
-          <h2 style={{fontFamily:'DM Serif Display,serif',fontSize:24,marginBottom:8}}>Work Preferences</h2>
-          <p style={{fontSize:14,color:'#5a5449',marginBottom:20}}>Select your preferred work arrangements and locations.</p>
+          <h2 style={{fontSize:24,marginBottom:8}}>Work Preferences</h2>
+          <p style={{fontSize:14,color:'rgba(60,60,67,0.65)',marginBottom:20}}>Select your preferred work arrangements and locations.</p>
           <label style={lbl}>Work Type (select all that apply)</label>
           <div style={{display:'flex',gap:10,marginBottom:24,flexWrap:'wrap'}}>
             {[['remote','Remote'],['hybrid','Hybrid'],['onsite','On-site']].map(([val,label])=>(
-              <button key={val} onClick={()=>toggleWorkType(val)} style={{padding:'10px 20px',borderRadius:4,fontWeight:700,fontSize:13,cursor:'pointer',border:`2px solid ${profile.workTypes.includes(val)?'#0f0f0f':'#d6d0c4'}`,background:profile.workTypes.includes(val)?'#0f0f0f':'transparent',color:profile.workTypes.includes(val)?'#fff':'#7a7469'}}>{label}</button>
+              <button key={val} onClick={()=>toggleWorkType(val)} style={{padding:'10px 20px',borderRadius:10,fontWeight:700,fontSize:13,cursor:'pointer',border:`2px solid ${profile.workTypes.includes(val)?'#000000':'rgba(60,60,67,0.2)'}`,background:profile.workTypes.includes(val)?'#000000':'transparent',color:profile.workTypes.includes(val)?'#fff':'rgba(60,60,67,0.6)'}}>{label}</button>
             ))}
           </div>
           {(profile.workTypes.includes('hybrid')||profile.workTypes.includes('onsite'))&&(
@@ -758,14 +758,14 @@ function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,onComp
               <label style={lbl}>Acceptable States / Cities</label>
               <div style={{display:'flex',flexWrap:'wrap',gap:6,marginBottom:10}}>
                 {profile.locations.map(l=>(
-                  <span key={l} style={{display:'flex',alignItems:'center',gap:4,background:'#f2e8cb',color:'#b5882e',fontSize:12,fontWeight:700,padding:'4px 10px',borderRadius:3}}>
-                    <MapPin size={10}/>{l}<button onClick={()=>removeLocation(l)} style={{background:'none',border:'none',cursor:'pointer',color:'#b5882e',padding:0}}><X size={10}/></button>
+                  <span key={l} style={{display:'flex',alignItems:'center',gap:4,background:'rgba(255,204,0,0.12)',color:'#FF9500',fontSize:12,fontWeight:700,padding:'4px 10px',borderRadius:3}}>
+                    <MapPin size={10}/>{l}<button onClick={()=>removeLocation(l)} style={{background:'none',border:'none',cursor:'pointer',color:'#FF9500',padding:0}}><X size={10}/></button>
                   </span>
                 ))}
               </div>
               <div style={{display:'flex',gap:8}}>
                 <input type="text" value={newLocation} onChange={e=>setNewLocation(e.target.value)} onKeyDown={e=>e.key==='Enter'&&addLocation()} style={inp({flex:'1',marginBottom:0})} placeholder="e.g. AZ, Phoenix, TX"/>
-                <button onClick={addLocation} disabled={!newLocation.trim()} style={{padding:'10px 14px',background:'#0f0f0f',color:'#fff',border:'none',borderRadius:4,cursor:'pointer',fontWeight:600,fontSize:13,display:'flex',alignItems:'center',gap:5}}><Plus size={14}/>Add</button>
+                <button onClick={addLocation} disabled={!newLocation.trim()} style={{padding:'10px 14px',background:'#000000',color:'#fff',border:'none',borderRadius:10,cursor:'pointer',fontWeight:600,fontSize:13,display:'flex',alignItems:'center',gap:5}}><Plus size={14}/>Add</button>
               </div>
             </div>
           )}
@@ -775,10 +775,10 @@ function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,onComp
       // ── STEP 6: SALARY ───────────────────────────────────────────────────
       case 6: return (
         <div>
-          <h2 style={{fontFamily:'DM Serif Display,serif',fontSize:24,marginBottom:8}}>Salary Range</h2>
-          <p style={{fontSize:14,color:'#5a5449',marginBottom:8}}>Set your target compensation range. This filters job results and informs search queries.</p>
-          {extractedFields.has('salaryMin')&&(profile.salaryMin>0||profile.salaryMax>0)&&<div style={{fontSize:12,color:'#2a6644',marginBottom:12,display:'flex',alignItems:'center',gap:5}}><CheckCircle size={13} fill="#2a6644" color="#2a6644"/>Salary range extracted from resume — adjust if needed</div>}
-          {extractedFields.size>0&&!extractedFields.has('salaryMin')&&<div style={{fontSize:12,color:'#b5882e',marginBottom:12,display:'flex',alignItems:'center',gap:5}}><AlertTriangle size={12}/>Salary not found in resume — set your target range below</div>}
+          <h2 style={{fontSize:24,marginBottom:8}}>Salary Range</h2>
+          <p style={{fontSize:14,color:'rgba(60,60,67,0.65)',marginBottom:8}}>Set your target compensation range. This filters job results and informs search queries.</p>
+          {extractedFields.has('salaryMin')&&(profile.salaryMin>0||profile.salaryMax>0)&&<div style={{fontSize:12,color:'#1A7A3C',marginBottom:12,display:'flex',alignItems:'center',gap:5}}><CheckCircle size={13} fill="#1A7A3C" color="#1A7A3C"/>Salary range extracted from resume — adjust if needed</div>}
+          {extractedFields.size>0&&!extractedFields.has('salaryMin')&&<div style={{fontSize:12,color:'#FF9500',marginBottom:12,display:'flex',alignItems:'center',gap:5}}><AlertTriangle size={12}/>Salary not found in resume — set your target range below</div>}
           <SalarySlider min={profile.salaryMin} max={profile.salaryMax} onChange={(mn,mx)=>{upd('salaryMin',mn);upd('salaryMax',mx);}}/>
         </div>
       );
@@ -792,26 +792,26 @@ function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,onComp
   const canFinish=keysComplete;
 
   return (
-    <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.6)',zIndex:900,display:'flex',alignItems:'center',justifyContent:'center',padding:20}}>
-      <div style={{background:'#fff',borderRadius:6,width:'100%',maxWidth:580,maxHeight:'92vh',overflowY:'auto',boxShadow:'0 16px 64px rgba(0,0,0,0.25)',display:'flex',flexDirection:'column'}}>
+    <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.45)',backdropFilter:'blur(12px)',WebkitBackdropFilter:'blur(12px)',zIndex:900,display:'flex',alignItems:'center',justifyContent:'center',padding:20}}>
+      <div style={{background:'rgba(255,255,255,0.97)',borderRadius:24,width:'100%',maxWidth:580,maxHeight:'92vh',overflowY:'auto',boxShadow:'0 24px 80px rgba(0,0,0,0.2)',display:'flex',flexDirection:'column',border:'0.5px solid rgba(255,255,255,0.8)'}}>
 
         {/* Wizard header */}
-        <div style={{padding:'20px 24px 16px',borderBottom:'2px solid #0f0f0f',position:'sticky',top:0,background:'#fff',zIndex:10}}>
+        <div style={{padding:'18px 22px 14px',borderBottom:'0.5px solid rgba(60,60,67,0.18)',position:'sticky',top:0,background:'rgba(255,255,255,0.97)',backdropFilter:'blur(20px)',WebkitBackdropFilter:'blur(20px)',zIndex:10,borderRadius:'24px 24px 0 0'}}>
           <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}}>
             <div>
-              <div style={{fontSize:10,letterSpacing:'0.15em',textTransform:'uppercase',color:'#c8460a',fontWeight:700,marginBottom:4,display:'flex',alignItems:'center',gap:6}}><Wand2 size={11}/>Guided Setup</div>
-              <div style={{fontSize:13,color:'#7a7469'}}>Step {step+1} of {TOTAL_STEPS} — {stepLabels[step]}</div>
+              <div style={{fontSize:10,letterSpacing:'0.15em',textTransform:'uppercase',color:'#007AFF',fontWeight:700,marginBottom:4,display:'flex',alignItems:'center',gap:6}}><Wand2 size={11}/>Guided Setup</div>
+              <div style={{fontSize:13,color:'rgba(60,60,67,0.6)'}}>Step {step+1} of {TOTAL_STEPS} — {stepLabels[step]}</div>
             </div>
-            <button onClick={onClose} style={{background:'none',border:'none',cursor:'pointer',color:'#777'}}><X size={20}/></button>
+            <button onClick={onClose} style={{background:'rgba(120,120,128,0.12)',border:'none',cursor:'pointer',color:'rgba(60,60,67,0.6)',borderRadius:'50%',width:28,height:28,display:'flex',alignItems:'center',justifyContent:'center'}}><X size={16}/></button>
           </div>
-          <div style={{height:4,background:'#f5f2ec',borderRadius:2,overflow:'hidden'}}>
-            <div style={{height:'100%',background:'#c8460a',borderRadius:2,width:`${pct}%`,transition:'width 0.3s ease'}}/>
+          <div style={{height:4,background:'rgba(120,120,128,0.12)',borderRadius:2,overflow:'hidden'}}>
+            <div style={{height:'100%',background:'#007AFF',borderRadius:2,width:`${pct}%`,transition:'width 0.3s ease'}}/>
           </div>
           <div style={{display:'flex',gap:6,marginTop:10}}>
             {stepLabels.map((l,i)=>(
               <div key={l} style={{flex:1,textAlign:'center'}}>
-                <div style={{height:3,borderRadius:2,background:i<=step?'#c8460a':'#e8e4dc',marginBottom:4}}/>
-                <div style={{fontSize:9,color:i===step?'#c8460a':i<step?'#7a7469':'#c4bfb5',fontWeight:i===step?700:400}}>{l}</div>
+                <div style={{height:3,borderRadius:2,background:i<=step?'#007AFF':'rgba(120,120,128,0.12)',marginBottom:4}}/>
+                <div style={{fontSize:9,color:i===step?'#007AFF':i<step?'rgba(60,60,67,0.6)':'rgba(60,60,67,0.3)',fontWeight:i===step?700:400}}>{l}</div>
               </div>
             ))}
           </div>
@@ -819,12 +819,12 @@ function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,onComp
 
         {/* Extraction loading screen */}
         {extracting&&(
-          <div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:20,padding:32,background:'#fff'}}>
+          <div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:20,padding:32,background:'transparent'}}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="https://cdn.dribbble.com/userupload/19917114/file/original-880f3ab68d9bcfe041db6649d5f8003b.gif" alt="Loading" style={{width:160,height:160,objectFit:'contain',borderRadius:8}}/>
             <div style={{textAlign:'center'}}>
-              <div style={{fontFamily:'DM Serif Display,serif',fontSize:18,color:'#0f0f0f',marginBottom:6}}>Gathering everything needed</div>
-              <div style={{fontSize:13,color:'#7a7469'}}>to optimize your search...</div>
+              <div style={{fontSize:18,fontWeight:700,letterSpacing:'-0.02em',color:'#000',marginBottom:6}}>Gathering everything needed</div>
+              <div style={{fontSize:13,color:'rgba(60,60,67,0.5)'}}>to optimize your search...</div>
             </div>
           </div>
         )}
@@ -833,36 +833,36 @@ function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,onComp
 
         {/* Keys warning banner — shown on all steps after step 0 if keys missing */}
         {step>0&&!keysComplete&&(
-          <div style={{margin:'0 24px 16px',padding:'12px 16px',background:'#fff8f6',border:'1px solid #e8bead',borderRadius:4,fontSize:12,color:'#6b2200',display:'flex',alignItems:'center',gap:10,flexWrap:'wrap'}}>
-            <AlertTriangle size={14} color="#c8460a"/>
+          <div style={{margin:'0 22px 14px',padding:'12px 16px',background:'rgba(255,149,0,0.08)',border:'0.5px solid rgba(255,149,0,0.3)',borderRadius:12,fontSize:12,color:'#B56000',display:'flex',alignItems:'center',gap:10,flexWrap:'wrap'}}>
+            <AlertTriangle size={14} color="#007AFF"/>
             <span>API keys required to finish.</span>
-            <button onClick={()=>setStep(0)} style={{color:'#c8460a',background:'none',border:'none',cursor:'pointer',fontWeight:700,fontSize:12,textDecoration:'underline',padding:0}}>
+            <button onClick={()=>setStep(0)} style={{color:'#FF9500',background:'none',border:'none',cursor:'pointer',fontWeight:700,fontSize:12,textDecoration:'underline',padding:0}}>
               Go to API Keys step
             </button>
             <span>·</span>
-            <button onClick={onOpenHowTo} style={{color:'#1a4fd8',background:'none',border:'none',cursor:'pointer',fontSize:12,textDecoration:'underline',padding:0,display:'flex',alignItems:'center',gap:3}}>
+            <button onClick={onOpenHowTo} style={{color:'#007AFF',background:'none',border:'none',cursor:'pointer',fontSize:12,textDecoration:'underline',padding:0,display:'flex',alignItems:'center',gap:3}}>
               <HelpCircle size={12}/>How to Use
             </button>
           </div>
         )}
 
         {/* Nav */}
-        <div style={{padding:'16px 24px',borderTop:'1px solid #d6d0c4',display:'flex',justifyContent:'space-between',position:'sticky',bottom:0,background:'#fff'}}>
-          <button onClick={()=>step>0?setStep(s=>s-1):onClose()} style={{display:'flex',alignItems:'center',gap:5,padding:'10px 18px',border:'1.5px solid #d6d0c4',borderRadius:4,background:'transparent',cursor:'pointer',fontWeight:600,fontSize:13}}>
+        <div style={{padding:'14px 22px',borderTop:'0.5px solid rgba(60,60,67,0.18)',display:'flex',justifyContent:'space-between',position:'sticky',bottom:0,background:'rgba(255,255,255,0.97)',backdropFilter:'blur(20px)',WebkitBackdropFilter:'blur(20px)',borderRadius:'0 0 24px 24px'}}>
+          <button onClick={()=>step>0?setStep(s=>s-1):onClose()} style={{display:'flex',alignItems:'center',gap:5,padding:'10px 18px',background:'rgba(120,120,128,0.1)',border:'none',borderRadius:50,cursor:'pointer',fontWeight:600,fontSize:13,color:'#000'}}>
             <ChevronLeft size={14}/>{step===0?'Cancel':'Back'}
           </button>
           {!isLastStep
-            ?<button onClick={()=>step===1?extractAndAdvance():setStep(s=>s+1)} disabled={extracting} style={{display:'flex',alignItems:'center',gap:5,padding:'10px 22px',background:extracting?'#7a7469':'#0f0f0f',color:'#fff',border:'none',borderRadius:4,cursor:extracting?'not-allowed':'pointer',fontWeight:700,fontSize:13}}>
+            ?<button onClick={()=>step===1?extractAndAdvance():setStep(s=>s+1)} disabled={extracting} style={{display:'flex',alignItems:'center',gap:5,padding:'10px 22px',background:extracting?'#C7C7CC':'#007AFF',color:'#fff',border:'none',borderRadius:50,cursor:extracting?'not-allowed':'pointer',fontWeight:600,fontSize:13}}>
               Next<ChevronRight size={14}/>
             </button>
             :<div style={{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:6}}>
               <button
                 onClick={canFinish?finish:undefined}
-                style={{display:'flex',alignItems:'center',gap:5,padding:'10px 22px',background:canFinish?'#c8460a':'#d6d0c4',color:'#fff',border:'none',borderRadius:4,cursor:canFinish?'pointer':'not-allowed',fontWeight:700,fontSize:14,opacity:canFinish?1:0.7}}
+                style={{display:'flex',alignItems:'center',gap:5,padding:'10px 22px',background:canFinish?'#007AFF':'#C7C7CC',color:'#fff',border:'none',borderRadius:50,cursor:canFinish?'pointer':'not-allowed',fontWeight:600,fontSize:14}}
               >
                 <CheckCircle size={15}/>Save & Finish
               </button>
-              {!canFinish&&<div style={{fontSize:11,color:'#7a7469'}}>Complete API keys to enable</div>}
+              {!canFinish&&<div style={{fontSize:11,color:'rgba(60,60,67,0.45)'}}>Complete API keys to enable</div>}
             </div>
           }
         </div>
@@ -893,10 +893,10 @@ function UploadCard({type,meta,onUpload}:{type:'resume'|'cover';meta:UploadMeta|
       <div style={{fontWeight:700,fontSize:14,marginBottom:3,color:'#000',letterSpacing:'-0.01em'}}>{type==='resume'?'Upload Resume':'Upload Cover Letter'}</div>
       <div style={{fontSize:11,color:'rgba(60,60,67,0.5)',marginBottom:10}}>Text-only PDF · DOCX · HTML</div>
       {loading&&<div style={{fontSize:12,color:'#FF9500'}}>Parsing file...</div>}
-      {error&&<div style={{fontSize:12,color:'#c8460a',marginTop:6}}>{error}</div>}
+      {error&&<div style={{fontSize:12,color:'#007AFF',marginTop:6}}>{error}</div>}
       {meta&&!loading&&(
         <div style={{display:'flex',alignItems:'center',gap:5,justifyContent:'center',background:'rgba(52,199,89,0.1)',borderRadius:10,padding:'7px 10px',marginTop:6}}>
-          <CheckCircle size={12} color="#2a6644" fill="#2a6644"/>
+          <CheckCircle size={12} color="#1A7A3C" fill="#1A7A3C"/>
           <div style={{textAlign:'left'}}>
             <div style={{fontSize:11,fontWeight:700,color:'#1A7A3C'}}>{meta.filename}</div>
             <div style={{fontSize:10,color:'rgba(26,122,60,0.7)'}}>Loaded {fmtDateTime(meta.uploadedAt)}</div>
@@ -928,34 +928,34 @@ function HowToDrawer({onClose}:{onClose:()=>void;}) {
             <div style={{fontSize:11,letterSpacing:'0.06em',textTransform:'uppercase',color:'rgba(60,60,67,0.5)',fontWeight:600,marginBottom:4}}>Complete Guide</div>
             <h2 style={{fontSize:18,fontWeight:700,letterSpacing:'-0.02em',color:'#000'}}>How to Use</h2>
           </div>
-          <button onClick={onClose} style={{background:'none',border:'none',cursor:'pointer',color:'#777',padding:4}}><X size={20}/></button>
+          <button onClick={onClose} style={{background:'none',border:'none',cursor:'pointer',color:'rgba(60,60,67,0.5)',padding:4}}><X size={20}/></button>
         </div>
         <div style={{padding:'18px 22px',display:'flex',flexDirection:'column',gap:24}}>
           {[
-            {num:'1',title:'First-Time Setup',color:'#c8460a',items:[
+            {num:'1',title:'First-Time Setup',color:'#007AFF',items:[
               ['Get Anthropic API Key','Go to console.anthropic.com/settings/keys → sign in → Create Key → copy it → paste in Settings tab. This is a separate account from Claude.ai.'],
               ['Get Serper API Key','Go to serper.dev → sign up free (2,500 searches/month) → Dashboard → API Key → paste in Settings tab.'],
               ['Guided Setup Wizard','On the Search tab, click "Launch Guided Experience" to walk through your profile setup step by step. The wizard auto-extracts data from your uploaded resume.'],
               ['Upload Templates','Search tab → Upload Resume + Cover Letter cards. Accepts HTML, DOCX, or text-based PDF. Scanned/image PDFs will not work for extraction.'],
             ]},
-            {num:'2',title:'How Extraction Works',color:'#b5882e',items:[
+            {num:'2',title:'How Extraction Works',color:'#FF9500',items:[
               ['Resume Extraction','When you upload a resume (HTML, DOCX, or PDF), the app silently calls the Claude API to extract your name, contact info, job history, and skills. This costs approximately $0.01–0.03 per extraction.'],
               ['Instruction Auto-Update','Extracted data is used to personalize all three instruction sets (Job Search, Resume, Cover Letter) with your actual name, URLs, experience, and salary targets.'],
               ['Wizard Override','The Guided Setup Wizard lets you review and correct any extracted data before saving. Always review after extraction.'],
             ]},
-            {num:'3',title:'Running a Job Search',color:'#0f0f0f',items:[
+            {num:'3',title:'Running a Job Search',color:'#000000',items:[
               ['Search Tab','Click "Run Job Search". Instructions are pre-loaded from your saved profile. Edit them only in Settings.'],
               ['Special Instructions','One-off override for this search session only — not saved permanently.'],
               ['Loading Screen','Shows estimated ready time (~30–60 sec). Two-pass verified: Pass 1 searches all job boards, Pass 2 verifies each listing on the company\'s own site. Press Esc to cancel.'],
               ['Results','Board tab opens automatically with verified, triple-layer audited roles only.'],
             ]},
-            {num:'4',title:'The Job Board',color:'#1a4fd8',items:[
+            {num:'4',title:'The Job Board',color:'#007AFF',items:[
               ['Filter & Sort','Filter by seniority level or Remote Only. Sort by Salary or Fit Rating.'],
               ['Expand Cards','Click any card for full details: role summary, why you fit, requirements, company info, gold & red flags.'],
               ['Excluded Jobs','Scroll to bottom of Board. Click "Add to Board" on any excluded role to manually promote it.'],
               ['Rating','Green 8–10 (near perfect), Amber 6–7 (strong with gap), Red 5–6 (solid fundamentals). Below 5 not shown.'],
             ]},
-            {num:'5',title:'Generating Documents',color:'#2a6644',items:[
+            {num:'5',title:'Generating Documents',color:'#1A7A3C',items:[
               ['Create Resume / Cover Letter','Button on each expanded job card. Opens the generation modal.'],
               ['Paste Full JD','For best ATS alignment, paste the complete job description text. The auto-filled version is a starting point only.'],
               ['Loading Screen','Full-screen overlay appears. Click "dismiss loading screen" to hide it — generation continues in background.'],
@@ -963,20 +963,20 @@ function HowToDrawer({onClose}:{onClose:()=>void;}) {
               ['Preview & Download','Preview opens the document in a new tab. Download saves as an HTML file named by role and company.'],
               ['Auto-Marked Applied','Generating any document marks the job as Applied in the tracker automatically.'],
             ]},
-            {num:'6',title:'Applied Jobs Tracker',color:'#b5882e',items:[
+            {num:'6',title:'Applied Jobs Tracker',color:'#FF9500',items:[
               ['Status Timeline','Additive history: Applied → Interview → Offer → Rejected. Old statuses are never removed.'],
               ['Add Status','Click "+ Status" on any tracked job. Add an optional note per status entry.'],
               ['Duplicate Guard','"Already Applied" banner appears on Board cards for jobs in your tracker.'],
               ['Delete & Clear','Trash icon removes one job. "Clear All" resets the entire tracker.'],
             ]},
-            {num:'7',title:'Settings',color:'#6b21a8',items:[
+            {num:'7',title:'Settings',color:'#7A1AAA',items:[
               ['Edit Instructions','Three text areas: Job Search, Resume, Cover Letter. Each has its own Save and Reset to Default buttons.'],
               ['Reset Individual Set','Each instruction set has its own "Reset to Default" button with a confirmation modal.'],
               ['Save','Writes to localStorage immediately — no file or redeploy needed.'],
               ['Copy Instructions','Copies the full text to clipboard for manual repo updates if desired.'],
               ['API Keys','Paste keys here to override Vercel environment variables instantly without redeploying.'],
             ]},
-            {num:'8',title:'Reset & Profile',color:'#777',items:[
+            {num:'8',title:'Reset & Profile',color:'rgba(60,60,67,0.5)',items:[
               ['Reset All','The "Reset" button in the top nav clears ALL data: jobs, applied history, uploads, API keys, profile, and instructions. Requires confirmation.'],
               ['Re-run Wizard','Click "Launch Guided Experience" on the Search tab at any time to update your profile. All instructions update automatically.'],
               ['Wizard + Resume','If a resume is already uploaded when you open the wizard, it will note this and let you re-extract or continue with existing data.'],
@@ -984,13 +984,13 @@ function HowToDrawer({onClose}:{onClose:()=>void;}) {
           ].map(section=>(
             <section key={section.num}>
               <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:10,borderLeft:`4px solid ${section.color}`,paddingLeft:12}}>
-                <h3 style={{fontFamily:'DM Serif Display,serif',fontSize:16,fontWeight:400}}>{section.num} — {section.title}</h3>
+                <h3 style={{fontSize:16,fontWeight:400}}>{section.num} — {section.title}</h3>
               </div>
               <div style={{display:'flex',flexDirection:'column',gap:8,paddingLeft:4}}>
                 {section.items.map(([t,d])=>(
                   <div key={t}>
-                    <div style={{fontSize:12,fontWeight:700,color:'#0f0f0f',marginBottom:2}}>{t}</div>
-                    <div style={{fontSize:12,color:'#5a5449',lineHeight:1.65}}>{d}</div>
+                    <div style={{fontSize:12,fontWeight:700,color:'#000000',marginBottom:2}}>{t}</div>
+                    <div style={{fontSize:12,color:'rgba(60,60,67,0.65)',lineHeight:1.65}}>{d}</div>
                   </div>
                 ))}
               </div>
@@ -1045,42 +1045,42 @@ function GenerateModal({job,type,onClose,instructions,apiKey}:{
     <>
       {loading&&!dismissed&&<LoadingOverlay dismissOnly onDismiss={()=>setDismissed(true)} minutesEta={1}/>}
       <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.5)',zIndex:500,display:'flex',alignItems:'center',justifyContent:'center',padding:24}}>
-        <div style={{background:'#fff',borderRadius:4,boxShadow:'0 8px 32px rgba(0,0,0,0.14)',width:'100%',maxWidth:660,maxHeight:'85vh',overflowY:'auto'}}>
-          <div style={{padding:'20px 22px 14px',borderBottom:'1px solid #d6d0c4',display:'flex',alignItems:'center',justifyContent:'space-between',position:'sticky',top:0,background:'#fff'}}>
+        <div style={{background:'#fff',borderRadius:10,boxShadow:'0 8px 32px rgba(0,0,0,0.14)',width:'100%',maxWidth:660,maxHeight:'85vh',overflowY:'auto'}}>
+          <div style={{padding:'20px 22px 14px',borderBottom:'0.5px solid rgba(60,60,67,0.2)',display:'flex',alignItems:'center',justifyContent:'space-between',position:'sticky',top:0,background:'#fff'}}>
             <div>
-              <div style={{fontSize:10,letterSpacing:'0.12em',textTransform:'uppercase',color:'#c8460a',fontWeight:700,marginBottom:4}}>{type==='resume'?'Create Resume':'Create Cover Letter'}</div>
-              <h2 style={{fontFamily:'DM Serif Display,serif',fontSize:17}}>{job.company} — {job.title}</h2>
+              <div style={{fontSize:10,letterSpacing:'0.12em',textTransform:'uppercase',color:'#007AFF',fontWeight:700,marginBottom:4}}>{type==='resume'?'Create Resume':'Create Cover Letter'}</div>
+              <h2 style={{fontSize:17}}>{job.company} — {job.title}</h2>
             </div>
-            <button onClick={onClose} style={{background:'none',border:'none',cursor:'pointer',color:'#777'}}><X size={20}/></button>
+            <button onClick={onClose} style={{background:'none',border:'none',cursor:'pointer',color:'rgba(60,60,67,0.5)'}}><X size={20}/></button>
           </div>
           <div style={{padding:22}}>
-            {loading&&dismissed&&<div style={{display:'flex',alignItems:'center',gap:8,background:'#f2e8cb',borderRadius:4,padding:'10px 14px',marginBottom:14}}><Clock size={14} color="#b5882e"/><span style={{fontSize:13,color:'#7a5a1a',fontWeight:600}}>Generation in progress...</span></div>}
+            {loading&&dismissed&&<div style={{display:'flex',alignItems:'center',gap:8,background:'rgba(255,204,0,0.12)',borderRadius:10,padding:'10px 14px',marginBottom:14}}><Clock size={14} color="#FF9500"/><span style={{fontSize:13,color:'#7A5500',fontWeight:600}}>Generation in progress...</span></div>}
             {!hasUploadedTemplate&&(
-              <div style={{background:'#fff8f6',border:'1px solid #e8bead',borderRadius:4,padding:'12px 14px',marginBottom:14,display:'flex',alignItems:'flex-start',gap:10}}>
-                <AlertTriangle size={15} color="#c8460a" style={{flexShrink:0,marginTop:2}}/>
+              <div style={{background:'rgba(255,59,48,0.04)',border:'0.5px solid rgba(255,59,48,0.2)',borderRadius:10,padding:'12px 14px',marginBottom:14,display:'flex',alignItems:'flex-start',gap:10}}>
+                <AlertTriangle size={15} color="#007AFF" style={{flexShrink:0,marginTop:2}}/>
                 <div>
-                  <div style={{fontSize:13,fontWeight:700,color:'#6b2200',marginBottom:3}}>No {type==='resume'?'resume':'cover letter'} template uploaded</div>
-                  <div style={{fontSize:12,color:'#6b2200',lineHeight:1.6}}>
+                  <div style={{fontSize:13,fontWeight:700,color:'#D70015',marginBottom:3}}>No {type==='resume'?'resume':'cover letter'} template uploaded</div>
+                  <div style={{fontSize:12,color:'#D70015',lineHeight:1.6}}>
                     Upload your {type==='resume'?'resume':'cover letter'} template on the Search tab or in the Setup Wizard for best results. Generation will use the default blank template until you upload your own.
                   </div>
                 </div>
               </div>
             )}
-            <div style={{fontSize:10,fontWeight:700,letterSpacing:'0.15em',textTransform:'uppercase',color:'#7a7469',marginBottom:6}}>Job Description</div>
+            <div style={{fontSize:10,fontWeight:700,letterSpacing:'0.15em',textTransform:'uppercase',color:'rgba(60,60,67,0.6)',marginBottom:6}}>Job Description</div>
             <textarea value={jd} onChange={e=>setJd(e.target.value)} rows={9} disabled={loading}
-              style={{width:'100%',padding:'9px 12px',border:'1.5px solid #d6d0c4',borderRadius:4,fontFamily:'DM Sans,sans-serif',fontSize:13,resize:'vertical',outline:'none',marginBottom:14}}
+              style={{width:'100%',padding:'9px 12px',border:'0.5px solid rgba(60,60,67,0.2)',borderRadius:10,fontSize:13,resize:'vertical',outline:'none',marginBottom:14}}
               placeholder="Paste full job description for best ATS alignment..."/>
-            {error&&<div style={{background:'#f5d5c8',color:'#6b2200',padding:'10px 14px',borderRadius:4,marginBottom:14,fontSize:13,display:'flex',gap:8,alignItems:'center'}}><AlertTriangle size={15}/>{error}</div>}
-            {html&&!loading&&<div style={{background:'#d6ede2',color:'#1a5c38',padding:'10px 14px',borderRadius:4,marginBottom:14,fontSize:13,display:'flex',gap:8,alignItems:'center'}}><CheckCircle size={15} fill="#1a5c38" color="#1a5c38"/>Document generated. Preview or download below.</div>}
+            {error&&<div style={{background:'rgba(0,122,255,0.12)',color:'#D70015',padding:'10px 14px',borderRadius:10,marginBottom:14,fontSize:13,display:'flex',gap:8,alignItems:'center'}}><AlertTriangle size={15}/>{error}</div>}
+            {html&&!loading&&<div style={{background:'rgba(52,199,89,0.12)',color:'#1a5c38',padding:'10px 14px',borderRadius:10,marginBottom:14,fontSize:13,display:'flex',gap:8,alignItems:'center'}}><CheckCircle size={15} fill="#1a5c38" color="#1a5c38"/>Document generated. Preview or download below.</div>}
           </div>
-          <div style={{padding:'14px 22px',borderTop:'1px solid #d6d0c4',display:'flex',gap:8,justifyContent:'flex-end',flexWrap:'wrap',position:'sticky',bottom:0,background:'#fff'}}>
+          <div style={{padding:'14px 22px',borderTop:'0.5px solid rgba(60,60,67,0.2)',display:'flex',gap:8,justifyContent:'flex-end',flexWrap:'wrap',position:'sticky',bottom:0,background:'#fff'}}>
             {html&&<>
-              <button onClick={preview} style={{display:'flex',alignItems:'center',gap:6,padding:'8px 14px',border:'1.5px solid #d6d0c4',borderRadius:4,background:'transparent',cursor:'pointer',fontSize:12,fontWeight:600}}><ExternalLink size={13}/>Preview</button>
-              <button onClick={download} style={{display:'flex',alignItems:'center',gap:6,padding:'8px 14px',background:'#c8460a',color:'#fff',border:'none',borderRadius:4,cursor:'pointer',fontSize:12,fontWeight:600}}><Upload size={13}/>Download</button>
-              <button onClick={generate} disabled={loading} style={{display:'flex',alignItems:'center',gap:6,padding:'8px 12px',border:'1.5px solid #d6d0c4',borderRadius:4,background:'transparent',cursor:'pointer',fontSize:12,fontWeight:600,color:'#7a7469'}}><RotateCcw size={12}/>Regenerate</button>
+              <button onClick={preview} style={{display:'flex',alignItems:'center',gap:6,padding:'8px 14px',border:'0.5px solid rgba(60,60,67,0.2)',borderRadius:10,background:'transparent',cursor:'pointer',fontSize:12,fontWeight:600}}><ExternalLink size={13}/>Preview</button>
+              <button onClick={download} style={{display:'flex',alignItems:'center',gap:6,padding:'8px 14px',background:'#007AFF',color:'#fff',border:'none',borderRadius:10,cursor:'pointer',fontSize:12,fontWeight:600}}><Upload size={13}/>Download</button>
+              <button onClick={generate} disabled={loading} style={{display:'flex',alignItems:'center',gap:6,padding:'8px 12px',border:'0.5px solid rgba(60,60,67,0.2)',borderRadius:10,background:'transparent',cursor:'pointer',fontSize:12,fontWeight:600,color:'rgba(60,60,67,0.6)'}}><RotateCcw size={12}/>Regenerate</button>
             </>}
-            {!html&&<button onClick={generate} disabled={loading} style={{display:'flex',alignItems:'center',gap:6,padding:'10px 20px',background:'#0f0f0f',color:'#fff',border:'none',borderRadius:4,cursor:loading?'not-allowed':'pointer',fontSize:13,fontWeight:600,opacity:loading?0.6:1}}><Sparkles size={14}/>{loading?'Generating...':`Generate ${type==='resume'?'Resume':'Cover Letter'}`}</button>}
-            <button onClick={onClose} style={{display:'flex',alignItems:'center',gap:6,padding:'8px 14px',border:'1.5px solid #d6d0c4',borderRadius:4,background:'transparent',cursor:'pointer',fontSize:12,fontWeight:600}}><X size={13}/>Close</button>
+            {!html&&<button onClick={generate} disabled={loading} style={{display:'flex',alignItems:'center',gap:6,padding:'10px 20px',background:'#000000',color:'#fff',border:'none',borderRadius:10,cursor:loading?'not-allowed':'pointer',fontSize:13,fontWeight:600,opacity:loading?0.6:1}}><Sparkles size={14}/>{loading?'Generating...':`Generate ${type==='resume'?'Resume':'Cover Letter'}`}</button>}
+            <button onClick={onClose} style={{display:'flex',alignItems:'center',gap:6,padding:'8px 14px',border:'0.5px solid rgba(60,60,67,0.2)',borderRadius:10,background:'transparent',cursor:'pointer',fontSize:12,fontWeight:600}}><X size={13}/>Close</button>
           </div>
         </div>
       </div>
@@ -1093,20 +1093,20 @@ function SpecialModal({value,onChange,onClose}:{value:string;onChange:(v:string)
   const [local,setLocal]=useState(value);
   return (
     <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.5)',zIndex:600,display:'flex',alignItems:'center',justifyContent:'center',padding:24}}>
-      <div style={{background:'#fff',borderRadius:4,width:'100%',maxWidth:560,boxShadow:'0 8px 32px rgba(0,0,0,0.14)'}}>
-        <div style={{padding:'18px 22px 14px',borderBottom:'1px solid #d6d0c4',display:'flex',justifyContent:'space-between'}}>
-          <div><div style={{fontSize:10,letterSpacing:'0.15em',textTransform:'uppercase',color:'#c8460a',fontWeight:700,marginBottom:4}}>One-Off Override</div><h2 style={{fontFamily:'DM Serif Display,serif',fontSize:19}}>Special Instructions</h2></div>
-          <button onClick={onClose} style={{background:'none',border:'none',cursor:'pointer',color:'#777'}}><X size={19}/></button>
+      <div style={{background:'#fff',borderRadius:10,width:'100%',maxWidth:560,boxShadow:'0 8px 32px rgba(0,0,0,0.14)'}}>
+        <div style={{padding:'18px 22px 14px',borderBottom:'0.5px solid rgba(60,60,67,0.2)',display:'flex',justifyContent:'space-between'}}>
+          <div><div style={{fontSize:10,letterSpacing:'0.15em',textTransform:'uppercase',color:'#007AFF',fontWeight:700,marginBottom:4}}>One-Off Override</div><h2 style={{fontSize:19}}>Special Instructions</h2></div>
+          <button onClick={onClose} style={{background:'none',border:'none',cursor:'pointer',color:'rgba(60,60,67,0.5)'}}><X size={19}/></button>
         </div>
         <div style={{padding:22}}>
-          <p style={{fontSize:13,color:'#5a5449',marginBottom:12,lineHeight:1.6}}>Appended to your search instructions for this run only. Not saved.</p>
+          <p style={{fontSize:13,color:'rgba(60,60,67,0.65)',marginBottom:12,lineHeight:1.6}}>Appended to your search instructions for this run only. Not saved.</p>
           <textarea value={local} onChange={e=>setLocal(e.target.value)} rows={6}
-            style={{width:'100%',padding:'9px 12px',border:'1.5px solid #d6d0c4',borderRadius:4,fontFamily:'DM Sans,sans-serif',fontSize:13,resize:'vertical',outline:'none'}}
+            style={{width:'100%',padding:'9px 12px',border:'0.5px solid rgba(60,60,67,0.2)',borderRadius:10,fontSize:13,resize:'vertical',outline:'none'}}
             placeholder="e.g. Focus only on fintech companies this time..."/>
         </div>
-        <div style={{padding:'14px 22px',borderTop:'1px solid #d6d0c4',display:'flex',gap:8,justifyContent:'flex-end'}}>
-          <button onClick={()=>{onChange(local);onClose();}} style={{padding:'9px 16px',background:'#0f0f0f',color:'#fff',border:'none',borderRadius:4,cursor:'pointer',fontWeight:600,fontSize:13}}>Apply for this search</button>
-          <button onClick={()=>{onChange('');onClose();}} style={{padding:'9px 16px',border:'1.5px solid #d6d0c4',borderRadius:4,background:'transparent',cursor:'pointer',fontWeight:600,fontSize:13}}>Clear & Close</button>
+        <div style={{padding:'14px 22px',borderTop:'0.5px solid rgba(60,60,67,0.2)',display:'flex',gap:8,justifyContent:'flex-end'}}>
+          <button onClick={()=>{onChange(local);onClose();}} style={{padding:'9px 16px',background:'#000000',color:'#fff',border:'none',borderRadius:10,cursor:'pointer',fontWeight:600,fontSize:13}}>Apply for this search</button>
+          <button onClick={()=>{onChange('');onClose();}} style={{padding:'9px 16px',border:'0.5px solid rgba(60,60,67,0.2)',borderRadius:10,background:'transparent',cursor:'pointer',fontWeight:600,fontSize:13}}>Clear & Close</button>
         </div>
       </div>
     </div>
@@ -1119,25 +1119,25 @@ function AddStatusModal({jobId,onClose}:{jobId:string;onClose:()=>void;}) {
   const statuses:StatusEntry['status'][]=['applied','interview','offer','rejected'];
   return (
     <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.5)',zIndex:600,display:'flex',alignItems:'center',justifyContent:'center',padding:24}}>
-      <div style={{background:'#fff',borderRadius:4,width:'100%',maxWidth:420,boxShadow:'0 8px 32px rgba(0,0,0,0.14)'}}>
-        <div style={{padding:'18px 22px 14px',borderBottom:'1px solid #d6d0c4',display:'flex',justifyContent:'space-between'}}>
-          <h2 style={{fontFamily:'DM Serif Display,serif',fontSize:19}}>Add Status Update</h2>
-          <button onClick={onClose} style={{background:'none',border:'none',cursor:'pointer',color:'#777'}}><X size={19}/></button>
+      <div style={{background:'#fff',borderRadius:10,width:'100%',maxWidth:420,boxShadow:'0 8px 32px rgba(0,0,0,0.14)'}}>
+        <div style={{padding:'18px 22px 14px',borderBottom:'0.5px solid rgba(60,60,67,0.2)',display:'flex',justifyContent:'space-between'}}>
+          <h2 style={{fontSize:19}}>Add Status Update</h2>
+          <button onClick={onClose} style={{background:'none',border:'none',cursor:'pointer',color:'rgba(60,60,67,0.5)'}}><X size={19}/></button>
         </div>
         <div style={{padding:22}}>
-          <div style={{fontSize:10,fontWeight:700,letterSpacing:'0.15em',textTransform:'uppercase',color:'#7a7469',marginBottom:10}}>Status</div>
+          <div style={{fontSize:10,fontWeight:700,letterSpacing:'0.15em',textTransform:'uppercase',color:'rgba(60,60,67,0.6)',marginBottom:10}}>Status</div>
           <div style={{display:'flex',gap:8,marginBottom:18,flexWrap:'wrap'}}>
             {statuses.map(s=>(
-              <button key={s} onClick={()=>setStatus(s)} style={{padding:'6px 14px',borderRadius:4,border:`2px solid ${status===s?'#0f0f0f':'#d6d0c4'}`,background:status===s?'#0f0f0f':'transparent',color:status===s?'#fff':'#7a7469',fontWeight:700,fontSize:12,textTransform:'uppercase',letterSpacing:'0.06em',cursor:'pointer'}}>{s}</button>
+              <button key={s} onClick={()=>setStatus(s)} style={{padding:'6px 14px',borderRadius:10,border:`2px solid ${status===s?'#000000':'rgba(60,60,67,0.2)'}`,background:status===s?'#000000':'transparent',color:status===s?'#fff':'rgba(60,60,67,0.6)',fontWeight:700,fontSize:12,textTransform:'uppercase',letterSpacing:'0.06em',cursor:'pointer'}}>{s}</button>
             ))}
           </div>
-          <div style={{fontSize:10,fontWeight:700,letterSpacing:'0.15em',textTransform:'uppercase',color:'#7a7469',marginBottom:6}}>Note (optional)</div>
+          <div style={{fontSize:10,fontWeight:700,letterSpacing:'0.15em',textTransform:'uppercase',color:'rgba(60,60,67,0.6)',marginBottom:6}}>Note (optional)</div>
           <input type="text" value={note} onChange={e=>setNote(e.target.value)} placeholder="e.g. Phone screen Friday..."
-            style={{width:'100%',padding:'9px 12px',border:'1.5px solid #d6d0c4',borderRadius:4,fontFamily:'DM Sans,sans-serif',fontSize:13,outline:'none'}}/>
+            style={{width:'100%',padding:'9px 12px',border:'0.5px solid rgba(60,60,67,0.2)',borderRadius:10,fontSize:13,outline:'none'}}/>
         </div>
-        <div style={{padding:'14px 22px',borderTop:'1px solid #d6d0c4',display:'flex',gap:8,justifyContent:'flex-end'}}>
-          <button onClick={()=>{addStatusToJob(jobId,status,note||undefined);onClose();}} style={{padding:'9px 16px',background:'#0f0f0f',color:'#fff',border:'none',borderRadius:4,cursor:'pointer',fontWeight:600,fontSize:13}}>Add Status</button>
-          <button onClick={onClose} style={{padding:'9px 16px',border:'1.5px solid #d6d0c4',borderRadius:4,background:'transparent',cursor:'pointer',fontWeight:600,fontSize:13}}>Cancel</button>
+        <div style={{padding:'14px 22px',borderTop:'0.5px solid rgba(60,60,67,0.2)',display:'flex',gap:8,justifyContent:'flex-end'}}>
+          <button onClick={()=>{addStatusToJob(jobId,status,note||undefined);onClose();}} style={{padding:'9px 16px',background:'#000000',color:'#fff',border:'none',borderRadius:10,cursor:'pointer',fontWeight:600,fontSize:13}}>Add Status</button>
+          <button onClick={onClose} style={{padding:'9px 16px',border:'0.5px solid rgba(60,60,67,0.2)',borderRadius:10,background:'transparent',cursor:'pointer',fontWeight:600,fontSize:13}}>Cancel</button>
         </div>
       </div>
     </div>
@@ -1149,12 +1149,12 @@ function MobileFAB({instructions,onClose}:{instructions:string;onClose:()=>void;
     <>
       <div onClick={onClose} style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.4)',zIndex:800}}/>
       <div style={{position:'fixed',bottom:0,left:0,right:0,zIndex:900,height:'75vh',background:'#fff',borderRadius:'16px 16px 0 0',boxShadow:'0 -8px 32px rgba(0,0,0,0.2)',display:'flex',flexDirection:'column',animation:'slideUpSheet 0.3s ease'}}>
-        <div style={{padding:'14px 18px 12px',borderBottom:'1px solid #d6d0c4',display:'flex',justifyContent:'space-between',alignItems:'center',position:'sticky',top:0,background:'#fff'}}>
-          <div style={{fontSize:11,fontWeight:700,letterSpacing:'0.15em',textTransform:'uppercase',color:'#c8460a'}}>Search Instructions</div>
-          <button onClick={onClose} style={{background:'none',border:'none',cursor:'pointer',color:'#777'}}><X size={20}/></button>
+        <div style={{padding:'14px 18px 12px',borderBottom:'0.5px solid rgba(60,60,67,0.2)',display:'flex',justifyContent:'space-between',alignItems:'center',position:'sticky',top:0,background:'#fff'}}>
+          <div style={{fontSize:11,fontWeight:700,letterSpacing:'0.15em',textTransform:'uppercase',color:'#007AFF'}}>Search Instructions</div>
+          <button onClick={onClose} style={{background:'none',border:'none',cursor:'pointer',color:'rgba(60,60,67,0.5)'}}><X size={20}/></button>
         </div>
         <div style={{padding:'14px 18px',flex:1,overflowY:'auto',overflowX:'hidden'}}>
-          <pre style={{fontSize:11,color:'#3a3730',lineHeight:1.7,whiteSpace:'pre-wrap',wordBreak:'break-word',fontFamily:'monospace'}}>{instructions}</pre>
+          <pre style={{fontSize:11,color:'rgba(60,60,67,0.85)',lineHeight:1.7,whiteSpace:'pre-wrap',wordBreak:'break-word',fontFamily:'monospace'}}>{instructions}</pre>
         </div>
       </div>
     </>
@@ -1184,13 +1184,13 @@ function AnalyzeJDInput({excl,onContinue,onClose}:{
   return (
     <>
       <div style={{padding:22}}>
-        <p style={{fontSize:13,color:'#5a5449',lineHeight:1.7,marginBottom:16}}>
+        <p style={{fontSize:13,color:'rgba(60,60,67,0.65)',lineHeight:1.7,marginBottom:16}}>
           Provide the job description below for a more accurate analysis — or just continue and we'll do our best with available information.
         </p>
         <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:10,flexWrap:'nowrap'}}>
-          <div style={{fontSize:10,fontWeight:700,letterSpacing:'0.15em',textTransform:'uppercase',color:'#7a7469',whiteSpace:'nowrap'}}>Optional: Provide Job Description</div>
+          <div style={{fontSize:10,fontWeight:700,letterSpacing:'0.15em',textTransform:'uppercase',color:'rgba(60,60,67,0.6)',whiteSpace:'nowrap'}}>Optional: Provide Job Description</div>
           {jdUrl&&(
-            <a href={jdUrl} target="_blank" rel="noreferrer" style={{display:'inline-flex',alignItems:'center',gap:3,fontSize:10,color:'#1a4fd8',textDecoration:'none',fontWeight:600,whiteSpace:'nowrap'}}>
+            <a href={jdUrl} target="_blank" rel="noreferrer" style={{display:'inline-flex',alignItems:'center',gap:3,fontSize:10,color:'#007AFF',textDecoration:'none',fontWeight:600,whiteSpace:'nowrap'}}>
               · View JD ↗
             </a>
           )}
@@ -1198,7 +1198,7 @@ function AnalyzeJDInput({excl,onContinue,onClose}:{
 
         <div style={{display:'flex',gap:10,marginBottom:16,flexWrap:'wrap'}}>
           {[['none','Skip — continue anyway'],['file','Upload HTML file'],['text','Paste JD text']].map(([val,label])=>(
-            <button key={val} onClick={()=>setMode(val as 'none'|'file'|'text')} style={{padding:'8px 14px',borderRadius:4,border:`2px solid ${mode===val?'#0f0f0f':'#d6d0c4'}`,background:mode===val?'#0f0f0f':'transparent',color:mode===val?'#fff':'#7a7469',fontWeight:600,fontSize:12,cursor:'pointer'}}>
+            <button key={val} onClick={()=>setMode(val as 'none'|'file'|'text')} style={{padding:'8px 14px',borderRadius:10,border:`2px solid ${mode===val?'#000000':'rgba(60,60,67,0.2)'}`,background:mode===val?'#000000':'transparent',color:mode===val?'#fff':'rgba(60,60,67,0.6)',fontWeight:600,fontSize:12,cursor:'pointer'}}>
               {label}
             </button>
           ))}
@@ -1207,21 +1207,21 @@ function AnalyzeJDInput({excl,onContinue,onClose}:{
         {mode==='file'&&(
           <div>
             <input ref={fileRef} type="file" accept=".html,.htm,.txt" style={{display:'none'}} onChange={handleFile}/>
-            <div onClick={()=>fileRef.current?.click()} style={{border:'2px dashed #d6d0c4',borderRadius:6,padding:'16px 20px',textAlign:'center',cursor:'pointer',marginBottom:8}}>
-              <Upload size={20} color="#7a7469" style={{marginBottom:6}}/>
+            <div onClick={()=>fileRef.current?.click()} style={{border:'2px dashed rgba(60,60,67,0.2)',borderRadius:14,padding:'16px 20px',textAlign:'center',cursor:'pointer',marginBottom:8}}>
+              <Upload size={20} color="rgba(60,60,67,0.6)" style={{marginBottom:6}}/>
               <div style={{fontSize:13,fontWeight:600}}>{fileName||'Choose HTML or TXT file'}</div>
             </div>
           </div>
         )}
         {mode==='text'&&(
           <textarea value={jdText} onChange={e=>setJdText(e.target.value)} rows={7} placeholder="Paste the full job description text here..."
-            style={{width:'100%',padding:'9px 12px',border:'1.5px solid #d6d0c4',borderRadius:4,fontFamily:'DM Sans,sans-serif',fontSize:13,resize:'vertical',outline:'none'}}/>
+            style={{width:'100%',padding:'9px 12px',border:'0.5px solid rgba(60,60,67,0.2)',borderRadius:10,fontSize:13,resize:'vertical',outline:'none'}}/>
         )}
         <p style={{fontSize:12,color:'rgba(60,60,67,0.45)',marginTop:10,letterSpacing:'-0.01em'}}>Neither is required — click Continue to add the card with available information.</p>
       </div>
-      <div style={{padding:'14px 22px',borderTop:'1px solid #d6d0c4',display:'flex',gap:10,justifyContent:'flex-end',position:'sticky',bottom:0,background:'#fff'}}>
-        <button onClick={()=>onContinue(jdText)} style={{padding:'9px 18px',background:'#0f0f0f',color:'#fff',border:'none',borderRadius:4,cursor:'pointer',fontWeight:700,fontSize:13}}>Continue</button>
-        <button onClick={onClose} style={{padding:'9px 16px',border:'1.5px solid #d6d0c4',borderRadius:4,background:'transparent',cursor:'pointer',fontWeight:600,fontSize:13}}>Cancel</button>
+      <div style={{padding:'14px 22px',borderTop:'0.5px solid rgba(60,60,67,0.2)',display:'flex',gap:10,justifyContent:'flex-end',position:'sticky',bottom:0,background:'#fff'}}>
+        <button onClick={()=>onContinue(jdText)} style={{padding:'9px 18px',background:'#000000',color:'#fff',border:'none',borderRadius:10,cursor:'pointer',fontWeight:700,fontSize:13}}>Continue</button>
+        <button onClick={onClose} style={{padding:'9px 16px',border:'0.5px solid rgba(60,60,67,0.2)',borderRadius:10,background:'transparent',cursor:'pointer',fontWeight:600,fontSize:13}}>Cancel</button>
       </div>
     </>
   );
@@ -1238,15 +1238,15 @@ function JobCard({job,applied,onGenerate,generatingType,onReturnToExcluded}:{
     <div style={{background:'#fff',border:`0.5px solid ${applied?'rgba(255,149,0,0.4)':'rgba(60,60,67,0.12)'}`,borderRadius:16,overflow:'hidden',transition:'box-shadow 0.2s,transform 0.1s',boxShadow:'0 1px 4px rgba(0,0,0,0.06)'}}
       onMouseEnter={e=>{(e.currentTarget as HTMLDivElement).style.boxShadow='0 6px 20px rgba(0,0,0,0.1)';(e.currentTarget as HTMLDivElement).style.transform='translateY(-1px)';}}
       onMouseLeave={e=>{(e.currentTarget as HTMLDivElement).style.boxShadow='0 1px 4px rgba(0,0,0,0.06)';(e.currentTarget as HTMLDivElement).style.transform='';}}>
-      {applied&&<div style={{background:'#f2e8cb',padding:'4px 14px',fontSize:11,fontWeight:700,color:'#b5882e',letterSpacing:'0.06em',borderBottom:'1px solid #e8d89a',display:'flex',alignItems:'center',gap:6}}><CheckCircle size={11} fill="#b5882e" color="#b5882e"/>ALREADY APPLIED</div>}
+      {applied&&<div style={{background:'rgba(255,204,0,0.12)',padding:'4px 14px',fontSize:11,fontWeight:700,color:'#FF9500',letterSpacing:'0.06em',borderBottom:'0.5px solid #e8d89a',display:'flex',alignItems:'center',gap:6}}><CheckCircle size={11} fill="#FF9500" color="#FF9500"/>ALREADY APPLIED</div>}
       <div style={{padding:'16px 18px 12px',cursor:'pointer',display:'flex',justifyContent:'space-between',gap:12}} onClick={()=>setOpen(!open)}>
         <div style={{flex:1,minWidth:0}}>
-          <div style={{fontSize:11,letterSpacing:'0.1em',textTransform:'uppercase',fontWeight:700,color:'#c8460a',marginBottom:3,display:'flex',alignItems:'center',gap:5}}><Building2 size={11}/>{job.company}</div>
+          <div style={{fontSize:11,letterSpacing:'0.1em',textTransform:'uppercase',fontWeight:700,color:'#007AFF',marginBottom:3,display:'flex',alignItems:'center',gap:5}}><Building2 size={11}/>{job.company}</div>
           <div style={{fontSize:17,fontWeight:700,letterSpacing:'-0.02em',color:'#000',lineHeight:1.2,marginBottom:8}}>{job.title}</div>
           <div style={{display:'flex',flexWrap:'wrap',gap:5}}>
-            {job.isRemote&&<span style={{background:'#d6ede2',color:'#2a6644',fontSize:10,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',padding:'2px 7px',borderRadius:3,display:'flex',alignItems:'center',gap:3}}><MapPin size={9}/>Remote</span>}
-            {job.isHybrid&&<span style={{background:'#f2e8cb',color:'#b5882e',fontSize:10,fontWeight:700,letterSpacing:'0.06em',padding:'2px 7px',borderRadius:3,display:'flex',alignItems:'center',gap:3}}><MapPin size={9}/>Hybrid{(job as SavedJob&{location?:string}).location&&(job as SavedJob&{location?:string}).location!=='N/A'&&(job as SavedJob&{location?:string}).location!==''?` · ${(job as SavedJob&{location?:string}).location}`:''}</span>}
-            {(job as SavedJob&{isOnsite?:boolean;location?:string}).isOnsite&&<span style={{background:'#e8e4f5',color:'#4a1a80',fontSize:10,fontWeight:700,letterSpacing:'0.06em',padding:'2px 7px',borderRadius:3,display:'flex',alignItems:'center',gap:3}}><Building2 size={9}/>Office{(job as SavedJob&{location?:string}).location&&(job as SavedJob&{location?:string}).location!=='N/A'&&(job as SavedJob&{location?:string}).location!==''?` · ${(job as SavedJob&{location?:string}).location}`:''}</span>}
+            {job.isRemote&&<span style={{background:'rgba(52,199,89,0.12)',color:'#1A7A3C',fontSize:10,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',padding:'2px 7px',borderRadius:10,display:'flex',alignItems:'center',gap:3}}><MapPin size={9}/>Remote</span>}
+            {job.isHybrid&&<span style={{background:'rgba(255,204,0,0.12)',color:'#FF9500',fontSize:10,fontWeight:700,letterSpacing:'0.06em',padding:'2px 7px',borderRadius:10,display:'flex',alignItems:'center',gap:3}}><MapPin size={9}/>Hybrid{(job as SavedJob&{location?:string}).location&&(job as SavedJob&{location?:string}).location!=='N/A'&&(job as SavedJob&{location?:string}).location!==''?` · ${(job as SavedJob&{location?:string}).location}`:''}</span>}
+            {(job as SavedJob&{isOnsite?:boolean;location?:string}).isOnsite&&<span style={{background:'rgba(88,86,214,0.1)',color:'#5856D6',fontSize:10,fontWeight:700,letterSpacing:'0.06em',padding:'2px 7px',borderRadius:10,display:'flex',alignItems:'center',gap:3}}><Building2 size={9}/>Office{(job as SavedJob&{location?:string}).location&&(job as SavedJob&{location?:string}).location!=='N/A'&&(job as SavedJob&{location?:string}).location!==''?` · ${(job as SavedJob&{location?:string}).location}`:''}</span>}
             {(job.industry||[]).map(ind=><span key={ind} style={{background:'rgba(0,122,255,0.1)',color:'#005BD3',fontSize:10,fontWeight:600,padding:'3px 8px',borderRadius:50}}>{ind}</span>)}
           </div>
           <div style={{marginTop:9,fontSize:11,color:'#007AFF',display:'flex',alignItems:'center',gap:4,fontWeight:500}}>
@@ -1255,7 +1255,7 @@ function JobCard({job,applied,onGenerate,generatingType,onReturnToExcluded}:{
         </div>
         <div style={{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:7,flexShrink:0}}>
           <div style={{width:48,height:48,borderRadius:'50%',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',fontWeight:700,
-            ...(job.rating>=8?{background:'rgba(52,199,89,0.12)',color:'#1A7A3C',border:'1.5px solid rgba(52,199,89,0.4)'}:job.rating>=6?{background:'rgba(255,149,0,0.1)',color:'#B56000',border:'1.5px solid rgba(255,149,0,0.35)'}:{background:'rgba(255,59,48,0.1)',color:'#D70015',border:'1.5px solid rgba(255,59,48,0.3)'})}}>
+            ...(job.rating>=8?{background:'rgba(52,199,89,0.12)',color:'#1A7A3C',border:'0.5px solid rgba(52,199,89,0.4)'}:job.rating>=6?{background:'rgba(255,149,0,0.1)',color:'#B56000',border:'0.5px solid rgba(255,149,0,0.35)'}:{background:'rgba(255,59,48,0.1)',color:'#D70015',border:'0.5px solid rgba(255,59,48,0.3)'})}}>
             <Star size={9} fill="currentColor"/><span style={{fontSize:14,lineHeight:1}}>{job.rating}</span>
           </div>
           <div style={{textAlign:'right'}}>
@@ -1268,13 +1268,13 @@ function JobCard({job,applied,onGenerate,generatingType,onReturnToExcluded}:{
         <div style={{borderTop:'0.5px solid rgba(60,60,67,0.12)',padding:'16px 18px',background:'#F2F2F7'}}>
           <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(240px,1fr))',gap:16,marginBottom:16}}>
             <div><div style={{fontSize:11,fontWeight:600,letterSpacing:'0.04em',textTransform:'uppercase',color:'rgba(60,60,67,0.5)',marginBottom:5}}>Role Summary</div><p style={{fontSize:13,color:'rgba(60,60,67,0.85)',lineHeight:1.65}}>{job.roleSummary}</p></div>
-            <div><div style={{fontSize:11,fontWeight:600,letterSpacing:'0.04em',textTransform:'uppercase',color:'rgba(60,60,67,0.5)',marginBottom:5}}>Why You Fit ({job.rating}/10)</div><ul style={{paddingLeft:15,fontSize:13,color:'#3a3730',lineHeight:1.65}}>{(job.whyYouFit||[]).map((b,i)=><li key={i} style={{marginBottom:2}}>{b}</li>)}</ul></div>
-            <div><div style={{fontSize:11,fontWeight:600,letterSpacing:'0.04em',textTransform:'uppercase',color:'rgba(60,60,67,0.5)',marginBottom:5}}>Requirements</div><ul style={{paddingLeft:15,fontSize:13,color:'#3a3730',lineHeight:1.65}}>{(job.requirements||[]).map((r,i)=><li key={i} style={{marginBottom:2}}>{r}</li>)}</ul></div>
+            <div><div style={{fontSize:11,fontWeight:600,letterSpacing:'0.04em',textTransform:'uppercase',color:'rgba(60,60,67,0.5)',marginBottom:5}}>Why You Fit ({job.rating}/10)</div><ul style={{paddingLeft:15,fontSize:13,color:'rgba(60,60,67,0.85)',lineHeight:1.65}}>{(job.whyYouFit||[]).map((b,i)=><li key={i} style={{marginBottom:2}}>{b}</li>)}</ul></div>
+            <div><div style={{fontSize:11,fontWeight:600,letterSpacing:'0.04em',textTransform:'uppercase',color:'rgba(60,60,67,0.5)',marginBottom:5}}>Requirements</div><ul style={{paddingLeft:15,fontSize:13,color:'rgba(60,60,67,0.85)',lineHeight:1.65}}>{(job.requirements||[]).map((r,i)=><li key={i} style={{marginBottom:2}}>{r}</li>)}</ul></div>
             <div>
               <div style={{fontSize:11,fontWeight:600,letterSpacing:'0.04em',textTransform:'uppercase',color:'rgba(60,60,67,0.5)',marginBottom:5}}>Company Info</div>
-              <p style={{fontSize:13,color:'#3a3730',lineHeight:1.65,marginBottom:8}}>{job.companyInfo}</p>
-              {job.goldFlags?.length>0&&<div style={{marginBottom:6}}><div style={{fontSize:10,fontWeight:700,letterSpacing:'0.1em',textTransform:'uppercase',color:'#2a6644',marginBottom:3,display:'flex',alignItems:'center',gap:4}}><Flag size={10} fill="#2a6644"/>Gold Flags</div><ul style={{paddingLeft:15,fontSize:12,color:'#1A7A3C',lineHeight:1.6}}>{job.goldFlags.map((f,i)=><li key={i}>{f}</li>)}</ul></div>}
-              {job.redFlags?.length>0&&<div><div style={{fontSize:10,fontWeight:700,letterSpacing:'0.1em',textTransform:'uppercase',color:'#c8460a',marginBottom:3,display:'flex',alignItems:'center',gap:4}}><Flag size={10} fill="#c8460a"/>Red Flags</div><ul style={{paddingLeft:15,fontSize:12,color:'#D70015',lineHeight:1.6}}>{job.redFlags.map((f,i)=><li key={i}>{f}</li>)}</ul></div>}
+              <p style={{fontSize:13,color:'rgba(60,60,67,0.85)',lineHeight:1.65,marginBottom:8}}>{job.companyInfo}</p>
+              {job.goldFlags?.length>0&&<div style={{marginBottom:6}}><div style={{fontSize:10,fontWeight:700,letterSpacing:'0.1em',textTransform:'uppercase',color:'#1A7A3C',marginBottom:3,display:'flex',alignItems:'center',gap:4}}><Flag size={10} fill="#1A7A3C"/>Gold Flags</div><ul style={{paddingLeft:15,fontSize:12,color:'#1A7A3C',lineHeight:1.6}}>{job.goldFlags.map((f,i)=><li key={i}>{f}</li>)}</ul></div>}
+              {job.redFlags?.length>0&&<div><div style={{fontSize:10,fontWeight:700,letterSpacing:'0.1em',textTransform:'uppercase',color:'#007AFF',marginBottom:3,display:'flex',alignItems:'center',gap:4}}><Flag size={10} fill="#007AFF"/>Red Flags</div><ul style={{paddingLeft:15,fontSize:12,color:'#D70015',lineHeight:1.6}}>{job.redFlags.map((f,i)=><li key={i}>{f}</li>)}</ul></div>}
             </div>
           </div>
           <div style={{borderTop:'0.5px solid rgba(60,60,67,0.12)',paddingTop:12,display:'flex',gap:8,flexWrap:'wrap',alignItems:'center'}}>
@@ -1284,13 +1284,13 @@ function JobCard({job,applied,onGenerate,generatingType,onReturnToExcluded}:{
             <div style={{marginLeft:'auto',display:'flex',gap:8,flexWrap:'wrap'}}>
               <div style={{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:3}}>
                 <button onClick={()=>onGenerate(job,'resume')} disabled={generatingType==='resume'} style={{display:'flex',alignItems:'center',gap:5,padding:'7px 14px',background:'rgba(0,122,255,0.1)',color:'#005BD3',border:'none',borderRadius:50,fontSize:12,fontWeight:600,cursor:'pointer'}}>
-                  <FileText size={13} fill="#1a4fd8"/>{generatingType==='resume'?'Generating...':'Create Resume'}
+                  <FileText size={13} fill="#007AFF"/>{generatingType==='resume'?'Generating...':'Create Resume'}
                 </button>
                 {generatingType==='resume'&&<span style={{fontSize:10,color:'#FF9500',fontWeight:500}}>generating...</span>}
               </div>
               <div style={{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:3}}>
                 <button onClick={()=>onGenerate(job,'coverLetter')} disabled={generatingType==='coverLetter'} style={{display:'flex',alignItems:'center',gap:5,padding:'7px 14px',background:'rgba(175,82,222,0.1)',color:'#7A1AAA',border:'none',borderRadius:50,fontSize:12,fontWeight:600,cursor:'pointer'}}>
-                  <Mail size={13} fill="#6b21a8"/>{generatingType==='coverLetter'?'Generating...':'Create Cover Letter'}
+                  <Mail size={13} fill="#7A1AAA"/>{generatingType==='coverLetter'?'Generating...':'Create Cover Letter'}
                 </button>
                 {generatingType==='coverLetter'&&<span style={{fontSize:10,color:'#FF9500',fontWeight:500}}>generating...</span>}
               </div>
@@ -1351,34 +1351,34 @@ function SaveImportModal({onClose,onImportComplete}:{onClose:()=>void;onImportCo
     <div style={{position:'fixed',inset:0,background:'#000',zIndex:1100,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:24}}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src="https://cdn.dribbble.com/userupload/19917114/file/original-880f3ab68d9bcfe041db6649d5f8003b.gif" alt="Loading" style={{width:200,height:200,objectFit:'contain',borderRadius:8}}/>
-      <div style={{fontFamily:'DM Serif Display,serif',fontSize:20,color:'rgba(255,255,255,0.9)'}}>Applying your file...</div>
+      <div style={{fontSize:20,color:'rgba(255,255,255,0.9)'}}>Applying your file...</div>
       <div style={{fontSize:13,color:'rgba(255,255,255,0.5)'}}>Validating import data</div>
     </div>
   );
 
   if(phase==='invalid') return (
     <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.6)',zIndex:1100,display:'flex',alignItems:'center',justifyContent:'center',padding:24}}>
-      <div style={{background:'#fff',borderRadius:4,maxWidth:380,width:'100%',padding:28,textAlign:'center',boxShadow:'0 8px 32px rgba(0,0,0,0.2)'}}>
-        <AlertTriangle size={36} color="#c8460a" style={{marginBottom:14}}/>
-        <h2 style={{fontFamily:'DM Serif Display,serif',fontSize:22,marginBottom:10}}>File is Not Valid</h2>
-        <p style={{fontSize:13,color:'#5a5449',lineHeight:1.7,marginBottom:20}}>This file doesn't appear to be a valid Ape-X Job Board export. No settings were changed.</p>
-        <button onClick={()=>setPhase('menu')} style={{padding:'10px 24px',background:'#0f0f0f',color:'#fff',border:'none',borderRadius:4,cursor:'pointer',fontWeight:700,fontSize:14}}>Try Again</button>
-        <button onClick={onClose} style={{marginLeft:10,padding:'10px 20px',border:'1.5px solid #d6d0c4',borderRadius:4,background:'transparent',cursor:'pointer',fontWeight:600,fontSize:14}}>Cancel</button>
+      <div style={{background:'#fff',borderRadius:10,maxWidth:380,width:'100%',padding:28,textAlign:'center',boxShadow:'0 8px 32px rgba(0,0,0,0.2)'}}>
+        <AlertTriangle size={36} color="#007AFF" style={{marginBottom:14}}/>
+        <h2 style={{fontSize:22,marginBottom:10}}>File is Not Valid</h2>
+        <p style={{fontSize:13,color:'rgba(60,60,67,0.65)',lineHeight:1.7,marginBottom:20}}>This file doesn't appear to be a valid Ape-X Job Board export. No settings were changed.</p>
+        <button onClick={()=>setPhase('menu')} style={{padding:'10px 24px',background:'#000000',color:'#fff',border:'none',borderRadius:10,cursor:'pointer',fontWeight:700,fontSize:14}}>Try Again</button>
+        <button onClick={onClose} style={{marginLeft:10,padding:'10px 20px',border:'0.5px solid rgba(60,60,67,0.2)',borderRadius:10,background:'transparent',cursor:'pointer',fontWeight:600,fontSize:14}}>Cancel</button>
       </div>
     </div>
   );
 
   if(phase==='confirmOverwrite') return (
     <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.6)',zIndex:1100,display:'flex',alignItems:'center',justifyContent:'center',padding:24}}>
-      <div style={{background:'#fff',borderRadius:4,maxWidth:440,width:'100%',padding:28,textAlign:'center',boxShadow:'0 8px 32px rgba(0,0,0,0.2)'}}>
-        <AlertTriangle size={36} color="#c8460a" style={{marginBottom:14}}/>
-        <h2 style={{fontFamily:'DM Serif Display,serif',fontSize:22,marginBottom:10}}>Import Will Overwrite Everything</h2>
-        <p style={{fontSize:13,color:'#5a5449',lineHeight:1.7,marginBottom:20}}>
+      <div style={{background:'#fff',borderRadius:10,maxWidth:440,width:'100%',padding:28,textAlign:'center',boxShadow:'0 8px 32px rgba(0,0,0,0.2)'}}>
+        <AlertTriangle size={36} color="#007AFF" style={{marginBottom:14}}/>
+        <h2 style={{fontSize:22,marginBottom:10}}>Import Will Overwrite Everything</h2>
+        <p style={{fontSize:13,color:'rgba(60,60,67,0.65)',lineHeight:1.7,marginBottom:20}}>
           All current jobs, settings, instructions, profile data, and uploaded documents will be replaced with the imported file. This cannot be undone.
         </p>
         <div style={{display:'flex',gap:10,justifyContent:'center'}}>
-          <button onClick={doImport} style={{padding:'10px 22px',background:'#c8460a',color:'#fff',border:'none',borderRadius:4,cursor:'pointer',fontWeight:700,fontSize:13}}>Continue — Import</button>
-          <button onClick={onClose} style={{padding:'10px 20px',border:'1.5px solid #d6d0c4',borderRadius:4,background:'transparent',cursor:'pointer',fontWeight:600,fontSize:13}}>Cancel</button>
+          <button onClick={doImport} style={{padding:'10px 22px',background:'#007AFF',color:'#fff',border:'none',borderRadius:10,cursor:'pointer',fontWeight:700,fontSize:13}}>Continue — Import</button>
+          <button onClick={onClose} style={{padding:'10px 20px',border:'0.5px solid rgba(60,60,67,0.2)',borderRadius:10,background:'transparent',cursor:'pointer',fontWeight:600,fontSize:13}}>Cancel</button>
         </div>
       </div>
     </div>
@@ -1387,39 +1387,39 @@ function SaveImportModal({onClose,onImportComplete}:{onClose:()=>void;onImportCo
   // Menu state
   return (
     <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.5)',zIndex:1000,display:'flex',alignItems:'center',justifyContent:'center',padding:24}}>
-      <div style={{background:'#fff',borderRadius:4,width:'100%',maxWidth:520,boxShadow:'0 8px 32px rgba(0,0,0,0.14)'}}>
-        <div style={{padding:'20px 24px 14px',borderBottom:'1px solid #d6d0c4',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+      <div style={{background:'#fff',borderRadius:10,width:'100%',maxWidth:520,boxShadow:'0 8px 32px rgba(0,0,0,0.14)'}}>
+        <div style={{padding:'20px 24px 14px',borderBottom:'0.5px solid rgba(60,60,67,0.2)',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
           <div>
-            <div style={{fontSize:10,letterSpacing:'0.15em',textTransform:'uppercase',color:'#c8460a',fontWeight:700,marginBottom:4}}>Portable Data</div>
+            <div style={{fontSize:10,letterSpacing:'0.15em',textTransform:'uppercase',color:'#007AFF',fontWeight:700,marginBottom:4}}>Portable Data</div>
             <h2 style={{fontSize:18,fontWeight:700,letterSpacing:'-0.02em',color:'#000'}}>Save or Import Job Board</h2>
           </div>
-          <button onClick={onClose} style={{background:'none',border:'none',cursor:'pointer',color:'#777'}}><X size={20}/></button>
+          <button onClick={onClose} style={{background:'none',border:'none',cursor:'pointer',color:'rgba(60,60,67,0.5)'}}><X size={20}/></button>
         </div>
         <div style={{padding:24,display:'grid',gap:14}}>
           {/* Save option */}
-          <div style={{border:'1px solid #d6d0c4',borderRadius:6,padding:'18px 20px'}}>
+          <div style={{border:'0.5px solid rgba(60,60,67,0.2)',borderRadius:14,padding:'18px 20px'}}>
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:14}}>
               <div style={{flex:1}}>
                 <div style={{fontWeight:700,fontSize:14,marginBottom:4,display:'flex',alignItems:'center',gap:7}}><FileText size={15}/>Save Current Job Board</div>
-                <p style={{fontSize:12,color:'#5a5449',lineHeight:1.65}}>
-                  Exports everything — jobs, applied history, instructions, profile, search history, and uploaded documents — to a portable <code style={{background:'#f5f2ec',padding:'1px 5px',borderRadius:3}}>json</code> file. API keys are included so the session is fully portable. Store this file securely.
+                <p style={{fontSize:12,color:'rgba(60,60,67,0.65)',lineHeight:1.65}}>
+                  Exports everything — jobs, applied history, instructions, profile, search history, and uploaded documents — to a portable <code style={{background:'#F2F2F7',padding:'1px 5px',borderRadius:3}}>json</code> file. API keys are included so the session is fully portable. Store this file securely.
                 </p>
               </div>
-              <button onClick={handleExport} style={{flexShrink:0,padding:'9px 16px',background:'#0f0f0f',color:'#fff',border:'none',borderRadius:4,cursor:'pointer',fontWeight:700,fontSize:13,display:'flex',alignItems:'center',gap:6}}>
+              <button onClick={handleExport} style={{flexShrink:0,padding:'9px 16px',background:'#000000',color:'#fff',border:'none',borderRadius:10,cursor:'pointer',fontWeight:700,fontSize:13,display:'flex',alignItems:'center',gap:6}}>
                 <Upload size={14}/>Export
               </button>
             </div>
           </div>
           {/* Import option */}
-          <div style={{border:'1px solid #d6d0c4',borderRadius:6,padding:'18px 20px'}}>
+          <div style={{border:'0.5px solid rgba(60,60,67,0.2)',borderRadius:14,padding:'18px 20px'}}>
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:14}}>
               <div style={{flex:1}}>
                 <div style={{fontWeight:700,fontSize:14,marginBottom:4,display:'flex',alignItems:'center',gap:7}}><Upload size={15}/>Import Job Board</div>
-                <p style={{fontSize:12,color:'#5a5449',lineHeight:1.65}}>
-                  Load a previously exported <code style={{background:'#f5f2ec',padding:'1px 5px',borderRadius:3}}>json</code> file. Everything in the app will be replaced with the imported session. You will be warned before anything is overwritten.
+                <p style={{fontSize:12,color:'rgba(60,60,67,0.65)',lineHeight:1.65}}>
+                  Load a previously exported <code style={{background:'#F2F2F7',padding:'1px 5px',borderRadius:3}}>json</code> file. Everything in the app will be replaced with the imported session. You will be warned before anything is overwritten.
                 </p>
               </div>
-              <button onClick={()=>fileRef.current?.click()} style={{flexShrink:0,padding:'9px 16px',background:'transparent',color:'#0f0f0f',border:'1.5px solid #d6d0c4',borderRadius:4,cursor:'pointer',fontWeight:700,fontSize:13,display:'flex',alignItems:'center',gap:6}}>
+              <button onClick={()=>fileRef.current?.click()} style={{flexShrink:0,padding:'9px 16px',background:'transparent',color:'#000000',border:'0.5px solid rgba(60,60,67,0.2)',borderRadius:10,cursor:'pointer',fontWeight:700,fontSize:13,display:'flex',alignItems:'center',gap:6}}>
                 <Upload size={14}/>Import
               </button>
             </div>
@@ -1494,31 +1494,31 @@ function TermsModal({onClose}:{onClose:()=>void;}) {
 
   return (
     <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.7)',zIndex:1000,display:'flex',alignItems:'center',justifyContent:'center',padding:'24px',overflow:'hidden'}}>
-      <div style={{background:'#fff',borderRadius:6,width:'100%',maxWidth:720,maxHeight:'90vh',boxShadow:'0 16px 64px rgba(0,0,0,0.25)',display:'flex',flexDirection:'column',overflow:'hidden'}}>
-        <div style={{padding:'24px 28px 18px',borderBottom:'3px solid #0f0f0f',display:'flex',justifyContent:'space-between',alignItems:'flex-start',flexShrink:0}}>
+      <div style={{background:'#fff',borderRadius:14,width:'100%',maxWidth:720,maxHeight:'90vh',boxShadow:'0 16px 64px rgba(0,0,0,0.25)',display:'flex',flexDirection:'column',overflow:'hidden'}}>
+        <div style={{padding:'24px 28px 18px',borderBottom:'3px solid #000000',display:'flex',justifyContent:'space-between',alignItems:'flex-start',flexShrink:0}}>
           <div>
-            <div style={{fontSize:10,letterSpacing:'0.18em',textTransform:'uppercase',color:'#c8460a',fontWeight:700,marginBottom:6}}>Legal</div>
-            <h1 style={{fontFamily:'DM Serif Display,serif',fontSize:26,fontWeight:400,lineHeight:1.1}}>Terms &amp; Conditions</h1>
-            <p style={{fontSize:12,color:'#7a7469',marginTop:6}}>Ape X LLC · Ape-X Job Board Application · Last updated May 2026</p>
+            <div style={{fontSize:10,letterSpacing:'0.18em',textTransform:'uppercase',color:'#007AFF',fontWeight:700,marginBottom:6}}>Legal</div>
+            <h1 style={{fontSize:26,fontWeight:400,lineHeight:1.1}}>Terms &amp; Conditions</h1>
+            <p style={{fontSize:12,color:'rgba(60,60,67,0.6)',marginTop:6}}>Ape X LLC · Ape-X Job Board Application · Last updated May 2026</p>
           </div>
-          <button onClick={onClose} style={{background:'none',border:'none',cursor:'pointer',color:'#777',padding:4,flexShrink:0}}><X size={22}/></button>
+          <button onClick={onClose} style={{background:'none',border:'none',cursor:'pointer',color:'rgba(60,60,67,0.5)',padding:4,flexShrink:0}}><X size={22}/></button>
         </div>
         <div style={{padding:'24px 28px 32px',display:'flex',flexDirection:'column',gap:22,overflowY:'auto',flex:1}}>
-          <div style={{background:'#fff8f6',border:'1px solid #e8bead',borderRadius:4,padding:'12px 16px',fontSize:12,color:'#6b2200',lineHeight:1.7,flexShrink:0}}>
+          <div style={{background:'rgba(255,59,48,0.04)',border:'0.5px solid rgba(255,59,48,0.2)',borderRadius:10,padding:'12px 16px',fontSize:12,color:'#D70015',lineHeight:1.7,flexShrink:0}}>
             <strong>Please read these Terms carefully.</strong> By using the Ape-X Job Board application, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions and all applicable laws.
           </div>
           {sections.map(s=>(
             <div key={s.title}>
-              <h3 style={{fontFamily:'DM Serif Display,serif',fontSize:16,fontWeight:400,marginBottom:8,color:'#0f0f0f'}}>{s.title}</h3>
-              <p style={{fontSize:13,color:'#3a3730',lineHeight:1.75}}>{s.body}</p>
+              <h3 style={{fontSize:16,fontWeight:400,marginBottom:8,color:'#000000'}}>{s.title}</h3>
+              <p style={{fontSize:13,color:'rgba(60,60,67,0.85)',lineHeight:1.75}}>{s.body}</p>
             </div>
           ))}
-          <div style={{borderTop:'1px solid #d6d0c4',paddingTop:18,fontSize:12,color:'#7a7469',lineHeight:1.7}}>
+          <div style={{borderTop:'0.5px solid rgba(60,60,67,0.2)',paddingTop:18,fontSize:12,color:'rgba(60,60,67,0.6)',lineHeight:1.7}}>
             These Terms and Conditions were last updated May 2026 and are effective immediately. By continuing to use the Ape-X Job Board application, you agree to these terms in their entirety.
           </div>
         </div>
-        <div style={{padding:'16px 28px',borderTop:'1px solid #d6d0c4',display:'flex',justifyContent:'flex-end',flexShrink:0,background:'#fff'}}>
-          <button onClick={onClose} style={{padding:'10px 24px',background:'#0f0f0f',color:'#fff',border:'none',borderRadius:4,cursor:'pointer',fontWeight:700,fontSize:14}}>Close</button>
+        <div style={{padding:'16px 28px',borderTop:'0.5px solid rgba(60,60,67,0.2)',display:'flex',justifyContent:'flex-end',flexShrink:0,background:'#fff'}}>
+          <button onClick={onClose} style={{padding:'10px 24px',background:'#000000',color:'#fff',border:'none',borderRadius:10,cursor:'pointer',fontWeight:700,fontSize:14}}>Close</button>
         </div>
       </div>
     </div>
@@ -1911,26 +1911,26 @@ export default function Home() {
       {/* Manage History Modal */}
       {showManageHistory&&(
         <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.6)',zIndex:800,display:'flex',alignItems:'center',justifyContent:'center',padding:24}}>
-          <div style={{background:'#fff',borderRadius:4,width:'100%',maxWidth:560,maxHeight:'80vh',overflowY:'auto',boxShadow:'0 8px 32px rgba(0,0,0,0.2)'}}>
-            <div style={{padding:'18px 22px 14px',borderBottom:'1px solid #d6d0c4',display:'flex',justifyContent:'space-between',alignItems:'center',position:'sticky',top:0,background:'#fff'}}>
+          <div style={{background:'#fff',borderRadius:10,width:'100%',maxWidth:560,maxHeight:'80vh',overflowY:'auto',boxShadow:'0 8px 32px rgba(0,0,0,0.2)'}}>
+            <div style={{padding:'18px 22px 14px',borderBottom:'0.5px solid rgba(60,60,67,0.2)',display:'flex',justifyContent:'space-between',alignItems:'center',position:'sticky',top:0,background:'#fff'}}>
               <h2 style={{fontSize:18,fontWeight:700,letterSpacing:'-0.02em',color:'#000'}}>Manage Saved Searches</h2>
-              <button onClick={()=>{setShowManageHistory(false);setHistoryToDelete(new Set());}} style={{background:'none',border:'none',cursor:'pointer',color:'#777'}}><X size={19}/></button>
+              <button onClick={()=>{setShowManageHistory(false);setHistoryToDelete(new Set());}} style={{background:'none',border:'none',cursor:'pointer',color:'rgba(60,60,67,0.5)'}}><X size={19}/></button>
             </div>
             <div style={{padding:22}}>
-              <p style={{fontSize:12,color:'#c8460a',marginBottom:16,display:'flex',alignItems:'center',gap:6}}><AlertTriangle size={12}/>Deletion cannot be undone.</p>
+              <p style={{fontSize:12,color:'#FF3B30',marginBottom:16,display:'flex',alignItems:'center',gap:6,fontWeight:500}}><AlertTriangle size={12}/>Deletion cannot be undone.</p>
               {searchHistory.map(snap=>(
-                <div key={snap.id} style={{background:historyToDelete.has(snap.id)?'#fff8f6':'#f5f2ec',border:`1px solid ${historyToDelete.has(snap.id)?'#e8bead':'#e8e4dc'}`,borderRadius:4,padding:'12px 14px',marginBottom:10,display:'flex',justifyContent:'space-between',alignItems:'center',gap:12}}>
+                <div key={snap.id} style={{background:historyToDelete.has(snap.id)?'rgba(255,59,48,0.04)':'#F2F2F7',border:`1px solid ${historyToDelete.has(snap.id)?'rgba(255,59,48,0.2)':'rgba(60,60,67,0.15)'}`,borderRadius:10,padding:'12px 14px',marginBottom:10,display:'flex',justifyContent:'space-between',alignItems:'center',gap:12}}>
                   <div style={{flex:1}}>
                     <div style={{fontWeight:700,fontSize:13,marginBottom:3}}>{snap.title}</div>
-                    <div style={{fontSize:11,color:'#7a7469'}}>{new Date(snap.timestamp).toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'})} · {snap.searchMeta.jobCount} jobs</div>
+                    <div style={{fontSize:11,color:'rgba(60,60,67,0.6)'}}>{new Date(snap.timestamp).toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'})} · {snap.searchMeta.jobCount} jobs</div>
                   </div>
-                  <input type="checkbox" checked={historyToDelete.has(snap.id)} onChange={e=>{const s=new Set(historyToDelete);e.target.checked?s.add(snap.id):s.delete(snap.id);setHistoryToDelete(s);}} style={{width:16,height:16,cursor:'pointer',accentColor:'#c8460a'}}/>
+                  <input type="checkbox" checked={historyToDelete.has(snap.id)} onChange={e=>{const s=new Set(historyToDelete);e.target.checked?s.add(snap.id):s.delete(snap.id);setHistoryToDelete(s);}} style={{width:16,height:16,cursor:'pointer',accentColor:'#007AFF'}}/>
                 </div>
               ))}
             </div>
-            <div style={{padding:'14px 22px',borderTop:'1px solid #d6d0c4',display:'flex',gap:10,justifyContent:'flex-end',position:'sticky',bottom:0,background:'#fff'}}>
-              {historyToDelete.size>0&&<button onClick={async()=>{historyToDelete.forEach(id=>deleteSearchFromHistory(id));setSearchHistory(getSearchHistory());setHistoryToDelete(new Set());setShowManageHistory(false);if(pendingSearch&&!isHistoryFull()){setPendingSearch(false);await doRunSearch();}}} style={{padding:'9px 16px',background:'#c8460a',color:'#fff',border:'none',borderRadius:4,cursor:'pointer',fontWeight:700,fontSize:13}}>Delete Selected ({historyToDelete.size})</button>}
-              <button onClick={()=>{setShowManageHistory(false);setHistoryToDelete(new Set());setPendingSearch(false);}} style={{padding:'9px 16px',border:'1.5px solid #d6d0c4',borderRadius:4,background:'transparent',cursor:'pointer',fontWeight:600,fontSize:13}}>Close</button>
+            <div style={{padding:'14px 22px',borderTop:'0.5px solid rgba(60,60,67,0.2)',display:'flex',gap:10,justifyContent:'flex-end',position:'sticky',bottom:0,background:'#fff'}}>
+              {historyToDelete.size>0&&<button onClick={async()=>{historyToDelete.forEach(id=>deleteSearchFromHistory(id));setSearchHistory(getSearchHistory());setHistoryToDelete(new Set());setShowManageHistory(false);if(pendingSearch&&!isHistoryFull()){setPendingSearch(false);await doRunSearch();}}} style={{padding:'9px 18px',background:'#FF3B30',color:'#fff',border:'none',borderRadius:50,cursor:'pointer',fontWeight:600,fontSize:13}}>Delete Selected ({historyToDelete.size})</button>}
+              <button onClick={()=>{setShowManageHistory(false);setHistoryToDelete(new Set());setPendingSearch(false);}} style={{padding:'9px 18px',background:'rgba(120,120,128,0.1)',color:'#000',border:'none',borderRadius:50,cursor:'pointer',fontWeight:600,fontSize:13}}>Close</button>
             </div>
           </div>
         </div>
@@ -1939,35 +1939,35 @@ export default function Home() {
       {/* Saved Searches Modal */}
       {showHistory&&(
         <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.5)',zIndex:700,display:'flex',alignItems:'center',justifyContent:'center',padding:24}}>
-          <div style={{background:'#fff',borderRadius:4,width:'100%',maxWidth:580,maxHeight:'80vh',overflowY:'auto',boxShadow:'0 8px 32px rgba(0,0,0,0.14)'}}>
-            <div style={{padding:'18px 22px 14px',borderBottom:'1px solid #d6d0c4',display:'flex',justifyContent:'space-between',alignItems:'center',position:'sticky',top:0,background:'#fff'}}>
+          <div style={{background:'#fff',borderRadius:10,width:'100%',maxWidth:580,maxHeight:'80vh',overflowY:'auto',boxShadow:'0 8px 32px rgba(0,0,0,0.14)'}}>
+            <div style={{padding:'18px 22px 14px',borderBottom:'0.5px solid rgba(60,60,67,0.2)',display:'flex',justifyContent:'space-between',alignItems:'center',position:'sticky',top:0,background:'#fff'}}>
               <div>
-                <h2 style={{fontFamily:'DM Serif Display,serif',fontSize:20,marginBottom:4}}>Saved Searches</h2>
-                <div style={{fontSize:11,color:'#7a7469'}}>{searchHistory.length} of 5 saved ({5-searchHistory.length} available)</div>
+                <h2 style={{fontSize:20,marginBottom:4}}>Saved Searches</h2>
+                <div style={{fontSize:12,color:'rgba(60,60,67,0.5)',fontWeight:500}}>{searchHistory.length} of 5 saved ({5-searchHistory.length} available)</div>
               </div>
-              <button onClick={()=>setShowHistory(false)} style={{background:'none',border:'none',cursor:'pointer',color:'#777'}}><X size={19}/></button>
+              <button onClick={()=>setShowHistory(false)} style={{background:'none',border:'none',cursor:'pointer',color:'rgba(60,60,67,0.5)'}}><X size={19}/></button>
             </div>
             <div style={{padding:22}}>
-              {searchHistory.length===0?<p style={{fontSize:13,color:'#7a7469',textAlign:'center',padding:'24px 0'}}>No saved searches yet. Run a search to get started.</p>:searchHistory.map((snap,idx)=>(
-                <div key={snap.id} style={{border:'1px solid #d6d0c4',borderRadius:4,padding:'16px 18px',marginBottom:12}}>
+              {searchHistory.length===0?<p style={{fontSize:13,color:'rgba(60,60,67,0.6)',textAlign:'center',padding:'24px 0'}}>No saved searches yet. Run a search to get started.</p>:searchHistory.map((snap,idx)=>(
+                <div key={snap.id} style={{background:'#F2F2F7',border:'none',borderRadius:14,padding:'16px 18px',marginBottom:10}}>
                   <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:12,flexWrap:'wrap'}}>
                     <div style={{flex:1}}>
-                      <div style={{fontWeight:700,fontSize:14,marginBottom:4}}>{snap.title}</div>
-                      <div style={{fontSize:11,color:'#7a7469',marginBottom:8}}>{new Date(snap.timestamp).toLocaleString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'})}</div>
+                      <div style={{fontWeight:700,fontSize:14,marginBottom:4,letterSpacing:'-0.01em',color:'#000'}}>{snap.title}</div>
+                      <div style={{fontSize:12,color:'rgba(60,60,67,0.45)',marginBottom:8}}>{new Date(snap.timestamp).toLocaleString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'})}</div>
                       <div style={{display:'flex',flexWrap:'wrap',gap:5}}>
-                        <span style={{fontSize:10,fontWeight:700,background:'#dde8f5',color:'#1a4fd8',padding:'2px 7px',borderRadius:3}}>{snap.searchMeta.jobCount} verified jobs</span>
-                        <span style={{fontSize:10,fontWeight:700,background:'#f2e8cb',color:'#b5882e',padding:'2px 7px',borderRadius:3}}>{snap.searchMeta.workTypes.join(' · ')}</span>
-                        {snap.searchMeta.locations.slice(0,3).map(l=><span key={l} style={{fontSize:10,fontWeight:700,background:'#f5f2ec',color:'#5a5449',padding:'2px 7px',borderRadius:3}}>{l}</span>)}
-                        <span style={{fontSize:10,fontWeight:700,background:'#d6ede2',color:'#2a6644',padding:'2px 7px',borderRadius:3}}>${(snap.searchMeta.salaryMin/1000).toFixed(0)}K–${(snap.searchMeta.salaryMax/1000).toFixed(0)}K</span>
+                        <span style={{fontSize:10,fontWeight:700,background:'rgba(0,122,255,0.1)',color:'#007AFF',padding:'2px 7px',borderRadius:3}}>{snap.searchMeta.jobCount} verified jobs</span>
+                        <span style={{fontSize:10,fontWeight:700,background:'rgba(255,204,0,0.12)',color:'#FF9500',padding:'2px 7px',borderRadius:3}}>{snap.searchMeta.workTypes.join(' · ')}</span>
+                        {snap.searchMeta.locations.slice(0,3).map(l=><span key={l} style={{fontSize:10,fontWeight:700,background:'#F2F2F7',color:'rgba(60,60,67,0.65)',padding:'2px 7px',borderRadius:3}}>{l}</span>)}
+                        <span style={{fontSize:10,fontWeight:700,background:'rgba(52,199,89,0.12)',color:'#1A7A3C',padding:'2px 7px',borderRadius:3}}>${(snap.searchMeta.salaryMin/1000).toFixed(0)}K–${(snap.searchMeta.salaryMax/1000).toFixed(0)}K</span>
                       </div>
-                      {snap.searchMeta.targetTitles.length>0&&<div style={{fontSize:11,color:'#5a5449',marginTop:6}}>{snap.searchMeta.targetTitles.slice(0,3).join(', ')}{snap.searchMeta.targetTitles.length>3&&` +${snap.searchMeta.targetTitles.length-3} more`}</div>}
+                      {snap.searchMeta.targetTitles.length>0&&<div style={{fontSize:11,color:'rgba(60,60,67,0.65)',marginTop:6}}>{snap.searchMeta.targetTitles.slice(0,3).join(', ')}{snap.searchMeta.targetTitles.length>3&&` +${snap.searchMeta.targetTitles.length-3} more`}</div>}
                     </div>
                     <div style={{display:'flex',flexDirection:'column',gap:6,alignItems:'flex-end'}}>
-                      <button onClick={()=>{setJobs(snap.jobs);setExcludedJobs(snap.excludedJobs as ExcludedJob[]);setSavedJobs(snap.jobs);setShowHistory(false);setTab('board');}} style={{padding:'7px 14px',background:'#0f0f0f',color:'#fff',border:'none',borderRadius:4,cursor:'pointer',fontWeight:700,fontSize:12,whiteSpace:'nowrap'}}>Restore</button>
-                      <button onClick={()=>{deleteSearchFromHistory(snap.id);setSearchHistory(getSearchHistory());}} style={{padding:'5px 10px',background:'transparent',color:'#c8460a',border:'1px solid #f5d5c8',borderRadius:4,cursor:'pointer',fontSize:11,fontWeight:600,display:'flex',alignItems:'center',gap:4}}><Trash2 size={11}/>Delete</button>
+                      <button onClick={()=>{setJobs(snap.jobs);setExcludedJobs(snap.excludedJobs as ExcludedJob[]);setSavedJobs(snap.jobs);setShowHistory(false);setTab('board');}} style={{padding:'7px 14px',background:'#007AFF',color:'#fff',border:'none',borderRadius:50,cursor:'pointer',fontWeight:600,fontSize:12,whiteSpace:'nowrap'}}>Restore</button>
+                      <button onClick={()=>{deleteSearchFromHistory(snap.id);setSearchHistory(getSearchHistory());}} style={{padding:'5px 10px',background:'rgba(255,59,48,0.08)',color:'#FF3B30',border:'none',borderRadius:50,cursor:'pointer',fontSize:11,fontWeight:600,display:'flex',alignItems:'center',gap:4}}><Trash2 size={11}/>Delete</button>
                     </div>
                   </div>
-                  {idx===searchHistory.length-1&&<div style={{fontSize:10,color:'#b5882e',marginTop:8,display:'flex',alignItems:'center',gap:4}}><AlertTriangle size={10}/>Oldest — will be auto-deleted if history is full</div>}
+                  {idx===searchHistory.length-1&&<div style={{fontSize:11,color:'#FF9500',marginTop:8,display:'flex',alignItems:'center',gap:4,fontWeight:500}}><AlertTriangle size={10}/>Oldest — will be auto-deleted if history is full</div>}
                 </div>
               ))}
             </div>
@@ -1982,13 +1982,13 @@ export default function Home() {
       )}
       {analyzeModal&&!analyzeLoadingVisible&&(
         <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.5)',zIndex:600,display:'flex',alignItems:'center',justifyContent:'center',padding:24}}>
-          <div style={{background:'#fff',borderRadius:4,width:'100%',maxWidth:560,boxShadow:'0 8px 32px rgba(0,0,0,0.14)'}}>
-            <div style={{padding:'18px 22px 14px',borderBottom:'1px solid #d6d0c4',display:'flex',justifyContent:'space-between'}}>
+          <div style={{background:'#fff',borderRadius:10,width:'100%',maxWidth:560,boxShadow:'0 8px 32px rgba(0,0,0,0.14)'}}>
+            <div style={{padding:'18px 22px 14px',borderBottom:'0.5px solid rgba(60,60,67,0.2)',display:'flex',justifyContent:'space-between'}}>
               <div>
-                <div style={{fontSize:10,letterSpacing:'0.12em',textTransform:'uppercase',color:'#c8460a',fontWeight:700,marginBottom:4}}>Add to Board</div>
-                <h2 style={{fontFamily:'DM Serif Display,serif',fontSize:18}}>{analyzeModal.company} — {analyzeModal.title}</h2>
+                <div style={{fontSize:10,letterSpacing:'0.12em',textTransform:'uppercase',color:'#007AFF',fontWeight:700,marginBottom:4}}>Add to Board</div>
+                <h2 style={{fontSize:18}}>{analyzeModal.company} — {analyzeModal.title}</h2>
               </div>
-              <button onClick={()=>{setAnalyzeModal(null);setAnalyzingJob(null);setAnalyzeResult(null);}} style={{background:'none',border:'none',cursor:'pointer',color:'#777'}}><X size={19}/></button>
+              <button onClick={()=>{setAnalyzeModal(null);setAnalyzingJob(null);setAnalyzeResult(null);}} style={{background:'none',border:'none',cursor:'pointer',color:'rgba(60,60,67,0.5)'}}><X size={19}/></button>
             </div>
             <AnalyzeJDInput excl={analyzeModal} onContinue={handleContinueAddToBoard} onClose={()=>{setAnalyzeModal(null);setAnalyzingJob(null);setAnalyzeResult(null);}}/>
           </div>
@@ -2000,7 +2000,7 @@ export default function Home() {
       <header className="header-inner" style={{background:'rgba(242,242,247,0.85)',backdropFilter:'blur(20px) saturate(180%)',WebkitBackdropFilter:'blur(20px) saturate(180%)',borderBottom:'0.5px solid rgba(60,60,67,0.29)',padding:'0 20px',height:52,display:'flex',alignItems:'center',justifyContent:'space-between',position:'sticky',top:0,zIndex:200,flexShrink:0}}>
         <div style={{display:'flex',alignItems:'center',gap:2}}>
           <div style={{marginRight:14,display:'flex',alignItems:'center',gap:8}}>
-            <div style={{width:28,height:28,borderRadius:8,background:'linear-gradient(135deg,#007AFF,#5856D6)',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:'0 2px 8px rgba(0,122,255,0.3)'}}>
+            <div style={{width:28,height:28,borderRadius:10,background:'linear-gradient(135deg,#007AFF,#5856D6)',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:'0 2px 8px rgba(0,122,255,0.3)'}}>
               <span style={{fontSize:14}}>🦍</span>
             </div>
             <span style={{fontSize:15,fontWeight:700,letterSpacing:'-0.02em',color:'#000'}}>Ape-X</span>
@@ -2012,16 +2012,16 @@ export default function Home() {
             {key:'applied',icon:<CheckSquare size={15}/>,label:`Applied${appliedJobs.length>0?` (${appliedJobs.length})`:''}`},
             {key:'settings',icon:<Settings size={15}/>,label:'Settings'},
           ] as {key:Tab;icon:React.ReactNode;label:string}[]).map(t=>(
-            <button key={t.key} onClick={()=>setTab(t.key)} style={{background:tab===t.key?'rgba(0,122,255,0.1)':'none',border:'none',cursor:'pointer',padding:'5px 12px',borderRadius:8,display:'flex',alignItems:'center',gap:5,fontSize:13,fontWeight:tab===t.key?600:500,color:tab===t.key?'#007AFF':'rgba(60,60,67,0.7)',transition:'all 0.15s',whiteSpace:'nowrap'}}>
+            <button key={t.key} onClick={()=>setTab(t.key)} style={{background:tab===t.key?'rgba(0,122,255,0.1)':'none',border:'none',cursor:'pointer',padding:'5px 12px',borderRadius:10,display:'flex',alignItems:'center',gap:5,fontSize:13,fontWeight:tab===t.key?600:500,color:tab===t.key?'#007AFF':'rgba(60,60,67,0.7)',transition:'all 0.15s',whiteSpace:'nowrap'}}>
               {t.icon}<span className="nav-label">{t.label}</span>
             </button>
           ))}
         </div>
         <div style={{display:'flex',gap:6,alignItems:'center'}}>
-          <button onClick={()=>setShowHowTo(!showHowTo)} style={{display:'flex',alignItems:'center',gap:4,background:'rgba(120,120,128,0.1)',color:'rgba(60,60,67,0.8)',border:'none',borderRadius:8,padding:'6px 12px',fontSize:12,fontWeight:600,cursor:'pointer'}}>
+          <button onClick={()=>setShowHowTo(!showHowTo)} style={{display:'flex',alignItems:'center',gap:4,background:'rgba(120,120,128,0.1)',color:'rgba(60,60,67,0.8)',border:'none',borderRadius:10,padding:'6px 12px',fontSize:12,fontWeight:600,cursor:'pointer'}}>
             <HelpCircle size={13}/><span className="nav-label">Help</span>
           </button>
-          <button onClick={()=>setShowReset(true)} style={{display:'flex',alignItems:'center',gap:4,background:'rgba(255,59,48,0.08)',color:'#FF3B30',border:'none',borderRadius:8,padding:'6px 12px',fontSize:12,fontWeight:600,cursor:'pointer'}}>
+          <button onClick={()=>setShowReset(true)} style={{display:'flex',alignItems:'center',gap:4,background:'rgba(255,59,48,0.08)',color:'#FF3B30',border:'none',borderRadius:10,padding:'6px 12px',fontSize:12,fontWeight:600,cursor:'pointer'}}>
             <RotateCcw size={12}/><span className="nav-label">Reset</span>
           </button>
         </div>
@@ -2053,14 +2053,14 @@ export default function Home() {
             {/* Hard block — missing API keys */}
             {(!anthropicKey||!serperKey)&&(
               <div style={{background:'rgba(255,149,0,0.08)',border:'0.5px solid rgba(255,149,0,0.3)',borderRadius:12,padding:'12px 16px',marginBottom:16,fontSize:13,color:'#B56000',display:'flex',alignItems:'flex-start',gap:10}}>
-                <AlertTriangle size={15} color="#c8460a" style={{flexShrink:0,marginTop:1}}/>
+                <AlertTriangle size={15} color="#007AFF" style={{flexShrink:0,marginTop:1}}/>
                 <div>
                   <strong>API keys required to search.</strong> Missing:{' '}
                   {!anthropicKey&&<span>Anthropic key</span>}
                   {!anthropicKey&&!serperKey&&<span> · </span>}
                   {!serperKey&&<span>Serper key</span>}
                   {' — '}
-                  <button onClick={()=>setTab('settings')} style={{background:'none',border:'none',cursor:'pointer',color:'#c8460a',fontWeight:700,fontSize:13,padding:0,textDecoration:'underline'}}>Go to Settings</button>
+                  <button onClick={()=>setTab('settings')} style={{background:'none',border:'none',cursor:'pointer',color:'#007AFF',fontWeight:700,fontSize:13,padding:0,textDecoration:'underline'}}>Go to Settings</button>
                 </div>
               </div>
             )}
@@ -2068,9 +2068,9 @@ export default function Home() {
             {/* Soft warn — missing titles */}
             {anthropicKey&&serperKey&&profile.targetTitles.length===0&&(
               <div style={{background:'rgba(255,204,0,0.1)',border:'0.5px solid rgba(255,204,0,0.35)',borderRadius:10,padding:'10px 14px',marginBottom:14,fontSize:12,color:'#7A5500',display:'flex',alignItems:'center',gap:8}}>
-                <AlertTriangle size={13} color="#b5882e"/>
+                <AlertTriangle size={13} color="#FF9500"/>
                 No job titles configured — search may return broad results.{' '}
-                <button onClick={()=>setShowWizard(true)} style={{background:'none',border:'none',cursor:'pointer',color:'#b5882e',fontWeight:700,fontSize:12,padding:0,textDecoration:'underline'}}>Run Setup Wizard</button>
+                <button onClick={()=>setShowWizard(true)} style={{background:'none',border:'none',cursor:'pointer',color:'#FF9500',fontWeight:700,fontSize:12,padding:0,textDecoration:'underline'}}>Run Setup Wizard</button>
               </div>
             )}
 
@@ -2111,14 +2111,14 @@ export default function Home() {
                   </button>
                 </div>
                 <div style={{background:'rgba(255,255,255,0.8)',backdropFilter:'blur(12px)',WebkitBackdropFilter:'blur(12px)',border:'0.5px solid rgba(60,60,67,0.18)',padding:'10px 14px',borderRadius:12,marginBottom:22,display:'flex',gap:6,flexWrap:'wrap',alignItems:'center'}}>
-                  <Filter size={12} style={{color:'#7a7469',marginRight:2}}/>
-                  <span style={{fontSize:11,color:'#7a7469',fontWeight:600,marginRight:4}}>Location:</span>
+                  <Filter size={12} style={{color:'rgba(60,60,67,0.6)',marginRight:2}}/>
+                  <span style={{fontSize:11,color:'rgba(60,60,67,0.6)',fontWeight:600,marginRight:4}}>Location:</span>
                   {([['false','All'],['true','Remote'],['notremote','Not Remote']] as [string,string][]).map(([val,label])=>(
                     <button key={val} onClick={()=>setFilterRemote(val==='false'?false:val==='true'?true:'notremote')} style={{background:String(filterRemote)===val?'#007AFF':'rgba(120,120,128,0.1)',color:String(filterRemote)===val?'#fff':'rgba(60,60,67,0.7)',border:'none',borderRadius:50,padding:'5px 12px',fontSize:12,fontWeight:500,cursor:'pointer'}}>{label}</button>
                   ))}
-                  <div style={{width:1,height:18,background:'#d6d0c4',margin:'0 2px'}}/>
-                  <SortDesc size={12} style={{color:'#7a7469'}}/>
-                  <span style={{fontSize:11,color:'#7a7469',fontWeight:600,marginRight:2}}>Sort:</span>
+                  <div style={{width:1,height:18,background:'rgba(60,60,67,0.2)',margin:'0 2px'}}/>
+                  <SortDesc size={12} style={{color:'rgba(60,60,67,0.6)'}}/>
+                  <span style={{fontSize:11,color:'rgba(60,60,67,0.6)',fontWeight:600,marginRight:2}}>Sort:</span>
                   {([['rating','Best Fit'],['salary','Salary ↓'],['salaryAsc','Salary ↑'],['recent','Recent']] as [string,string][]).map(([val,label])=>(
                     <button key={val} onClick={()=>setSortBy(val as 'salary'|'rating')} style={{background:sortBy===val?'#007AFF':'rgba(120,120,128,0.1)',color:sortBy===val?'#fff':'rgba(60,60,67,0.7)',border:'none',borderRadius:50,padding:'5px 12px',fontSize:12,fontWeight:500,cursor:'pointer'}}>{label}</button>
                   ))}
@@ -2127,7 +2127,7 @@ export default function Home() {
                   </div>
                 </div>
                 {displayJobs.length===0&&jobs.length>0?(
-                  <div style={{textAlign:'center',padding:'40px 24px',color:'#7a7469'}}>
+                  <div style={{textAlign:'center',padding:'40px 24px',color:'rgba(60,60,67,0.6)'}}>
                     <p style={{fontSize:14}}>No jobs match this filter.</p>
                   </div>
                 ):(
@@ -2146,22 +2146,22 @@ export default function Home() {
                 {excludedJobs.length>0&&(
                   <div style={{marginTop:36,padding:18,background:'rgba(255,59,48,0.04)',border:'0.5px solid rgba(255,59,48,0.2)',borderRadius:16}}>
                     <h3 style={{fontSize:15,fontWeight:700,marginBottom:12,color:'#D70015',display:'flex',alignItems:'center',gap:7,letterSpacing:'-0.01em'}}>
-                      <AlertTriangle size={16} fill="#c8460a" color="#c8460a"/>Jobs Excluded After Audit ({excludedJobs.length})
+                      <AlertTriangle size={16} fill="#007AFF" color="#007AFF"/>Jobs Excluded After Audit ({excludedJobs.length})
                     </h3>
                     <div style={{overflowX:'auto'}}>
                       <table style={{width:'100%',fontSize:12,borderCollapse:'collapse',minWidth:480}}>
-                        <thead><tr style={{textAlign:'left',borderBottom:'1px solid #d6d0c4'}}>
-                          {['Company','Role','Layer Failed','Reason',''].map(h=><th key={h} style={{padding:'5px 10px 5px 0',color:'#7a7469',fontWeight:600}}>{h}</th>)}
+                        <thead><tr style={{textAlign:'left',borderBottom:'0.5px solid rgba(60,60,67,0.2)'}}>
+                          {['Company','Role','Layer Failed','Reason',''].map(h=><th key={h} style={{padding:'5px 10px 5px 0',color:'rgba(60,60,67,0.6)',fontWeight:600}}>{h}</th>)}
                         </tr></thead>
                         <tbody>
                           {excludedJobs.map(j=>(
-                            <tr key={j.id} style={{borderBottom:'1px solid #ede9e0'}}>
+                            <tr key={j.id} style={{borderBottom:'0.5px solid #E5E5EA'}}>
                               <td style={{padding:'7px 10px 7px 0',fontWeight:600}}>{j.company}</td>
                               <td style={{padding:'7px 10px'}}>{j.title}</td>
                               <td style={{padding:'7px 10px'}}>{j.layerFailed}</td>
-                              <td style={{padding:'7px 10px',color:'#c8460a'}}>{j.reason}</td>
+                              <td style={{padding:'7px 10px',color:'#007AFF'}}>{j.reason}</td>
                               <td style={{padding:'7px 0'}}>
-                                <button onClick={()=>openAddToBoard(j)} style={{display:'flex',alignItems:'center',gap:4,padding:'5px 10px',background:'#0f0f0f',color:'#fff',border:'none',borderRadius:3,cursor:'pointer',fontSize:11,fontWeight:700,whiteSpace:'nowrap'}}>
+                                <button onClick={()=>openAddToBoard(j)} style={{display:'flex',alignItems:'center',gap:4,padding:'5px 10px',background:'#000000',color:'#fff',border:'none',borderRadius:10,cursor:'pointer',fontSize:11,fontWeight:700,whiteSpace:'nowrap'}}>
                                   <PlusCircle size={11}/>Add to Board
                                 </button>
                               </td>
@@ -2188,7 +2188,7 @@ export default function Home() {
               {appliedJobs.length>0&&<button onClick={()=>{if(confirm('Clear all applied jobs?')){clearAppliedJobs();setAppliedJobs([]);}}} style={{display:'flex',alignItems:'center',gap:5,padding:'7px 14px',background:'rgba(255,59,48,0.08)',color:'#FF3B30',border:'none',borderRadius:50,cursor:'pointer',fontSize:13,fontWeight:600}}><Trash2 size={13}/>Clear All</button>}
             </div>
             {appliedJobs.length===0?(
-              <div style={{textAlign:'center',padding:'60px 24px',color:'#7a7469'}}>
+              <div style={{textAlign:'center',padding:'60px 24px',color:'rgba(60,60,67,0.6)'}}>
                 <CheckSquare size={44} style={{opacity:0.3,marginBottom:14}}/>
                 <h3 style={{fontSize:20,fontWeight:700,color:'#000',marginBottom:8,letterSpacing:'-0.02em'}}>No applications yet</h3>
                 <p style={{fontSize:14,lineHeight:1.7,maxWidth:340,margin:'0 auto'}}>Generating any document marks a job as Applied here automatically.</p>
@@ -2204,23 +2204,23 @@ export default function Home() {
                         <div style={{display:'flex',flexWrap:'wrap',gap:5,alignItems:'center',marginBottom:9}}>
                           {(job.statusHistory||[]).map((s,i)=>(
                             <div key={i} style={{display:'flex',alignItems:'center',gap:4}}>
-                              {i>0&&<ArrowRight size={9} color="#d6d0c4"/>}
+                              {i>0&&<ArrowRight size={9} color="rgba(60,60,67,0.2)"/>}
                               <span style={{background:statusBg(s.status),color:statusColor(s.status),fontSize:10,fontWeight:700,letterSpacing:'0.03em',textTransform:'uppercase',padding:'3px 8px',borderRadius:50}}>{s.status}</span>
-                              <span style={{fontSize:10,color:'#7a7469'}}>{new Date(s.date).toLocaleDateString('en-US',{month:'short',day:'numeric'})}{s.note&&` · ${s.note}`}</span>
+                              <span style={{fontSize:10,color:'rgba(60,60,67,0.6)'}}>{new Date(s.date).toLocaleDateString('en-US',{month:'short',day:'numeric'})}{s.note&&` · ${s.note}`}</span>
                             </div>
                           ))}
                         </div>
                         <div style={{display:'flex',gap:5,flexWrap:'wrap'}}>
-                          {job.resumeGenerated&&<span style={{fontSize:10,background:'#dde8f5',color:'#1a4fd8',padding:'2px 7px',borderRadius:3,fontWeight:700,display:'flex',alignItems:'center',gap:3}}><FileText size={10} fill="#1a4fd8"/>Resume</span>}
-                          {job.coverLetterGenerated&&<span style={{fontSize:10,background:'#f3e8ff',color:'#6b21a8',padding:'2px 7px',borderRadius:3,fontWeight:700,display:'flex',alignItems:'center',gap:3}}><Mail size={10} fill="#6b21a8"/>Cover Letter</span>}
+                          {job.resumeGenerated&&<span style={{fontSize:10,background:'rgba(0,122,255,0.1)',color:'#007AFF',padding:'2px 7px',borderRadius:10,fontWeight:700,display:'flex',alignItems:'center',gap:3}}><FileText size={10} fill="#007AFF"/>Resume</span>}
+                          {job.coverLetterGenerated&&<span style={{fontSize:10,background:'rgba(175,82,222,0.1)',color:'#7A1AAA',padding:'2px 7px',borderRadius:10,fontWeight:700,display:'flex',alignItems:'center',gap:3}}><Mail size={10} fill="#7A1AAA"/>Cover Letter</span>}
                         </div>
                       </div>
                       <div style={{display:'flex',flexDirection:'column',gap:7,alignItems:'flex-end'}}>
-                        <div style={{fontSize:11,color:'#7a7469',display:'flex',alignItems:'center',gap:4}}><Clock size={11}/>{new Date(job.appliedAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</div>
+                        <div style={{fontSize:11,color:'rgba(60,60,67,0.6)',display:'flex',alignItems:'center',gap:4}}><Clock size={11}/>{new Date(job.appliedAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</div>
                         <div style={{display:'flex',gap:5,flexWrap:'wrap'}}>
-                          <button onClick={()=>setAddStatusModal(job.id)} style={{display:'flex',alignItems:'center',gap:4,padding:'5px 10px',border:'1.5px solid #d6d0c4',borderRadius:4,background:'transparent',cursor:'pointer',fontSize:12,fontWeight:600}}><Plus size={11}/>Status</button>
-                          {job.applyUrl&&<a href={job.applyUrl} target="_blank" rel="noreferrer" style={{display:'flex',alignItems:'center',padding:'5px 9px',border:'1.5px solid #d6d0c4',borderRadius:4,fontSize:12,fontWeight:600,textDecoration:'none',color:'#0f0f0f'}}><ExternalLink size={12}/></a>}
-                          <button onClick={()=>{if(confirm(`Remove ${job.company}?`)){deleteAppliedJob(job.id);setAppliedJobs(getAppliedJobs());}}} style={{display:'flex',alignItems:'center',padding:'5px 9px',border:'1.5px solid #f5d5c8',borderRadius:4,background:'transparent',cursor:'pointer',color:'#c8460a'}}><Trash2 size={12}/></button>
+                          <button onClick={()=>setAddStatusModal(job.id)} style={{display:'flex',alignItems:'center',gap:4,padding:'5px 10px',border:'0.5px solid rgba(60,60,67,0.2)',borderRadius:10,background:'transparent',cursor:'pointer',fontSize:12,fontWeight:600}}><Plus size={11}/>Status</button>
+                          {job.applyUrl&&<a href={job.applyUrl} target="_blank" rel="noreferrer" style={{display:'flex',alignItems:'center',padding:'5px 9px',border:'0.5px solid rgba(60,60,67,0.2)',borderRadius:10,fontSize:12,fontWeight:600,textDecoration:'none',color:'#000000'}}><ExternalLink size={12}/></a>}
+                          <button onClick={()=>{if(confirm(`Remove ${job.company}?`)){deleteAppliedJob(job.id);setAppliedJobs(getAppliedJobs());}}} style={{display:'flex',alignItems:'center',padding:'5px 9px',border:'0.5px solid rgba(0,122,255,0.12)',borderRadius:10,background:'transparent',cursor:'pointer',color:'#007AFF'}}><Trash2 size={12}/></button>
                         </div>
                       </div>
                     </div>
@@ -2328,10 +2328,10 @@ export default function Home() {
         <Copyright size={11}/>
         <span>{new Date().getFullYear()} Ape X LLC</span>
         <span>·</span>
-        {profile.portfolioUrl&&<><a href={`https://${profile.portfolioUrl}`} target="_blank" rel="noreferrer" style={{color:'#c8460a',textDecoration:'none'}}>{profile.portfolioUrl}</a><span>·</span></>}
-        {profile.linkedinUrl&&<a href={`https://${profile.linkedinUrl}`} target="_blank" rel="noreferrer" style={{color:'#c8460a',textDecoration:'none'}}>LinkedIn</a>}
+        {profile.portfolioUrl&&<><a href={`https://${profile.portfolioUrl}`} target="_blank" rel="noreferrer" style={{color:'#007AFF',textDecoration:'none'}}>{profile.portfolioUrl}</a><span>·</span></>}
+        {profile.linkedinUrl&&<a href={`https://${profile.linkedinUrl}`} target="_blank" rel="noreferrer" style={{color:'#007AFF',textDecoration:'none'}}>LinkedIn</a>}
         <span>·</span>
-        <button onClick={()=>setShowTerms(true)} style={{background:'none',border:'none',cursor:'pointer',color:'#7a7469',fontSize:11,padding:0,textDecoration:'underline'}}>Terms &amp; Conditions</button>
+        <button onClick={()=>setShowTerms(true)} style={{background:'none',border:'none',cursor:'pointer',color:'rgba(60,60,67,0.6)',fontSize:11,padding:0,textDecoration:'underline'}}>Terms &amp; Conditions</button>
       </footer>
     </div>
   );
