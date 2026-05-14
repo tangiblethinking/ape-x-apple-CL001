@@ -1727,7 +1727,7 @@ export default function Home() {
       // Pass 1 — search and classify
       setSearchPhase(1);
       const res1=await fetch('/api/search-pass1',{method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({instructions:jobSearchInstr,specialInstructions,apiKeyOverride:anthropicKey,serperKeyOverride:serperKey})});
+        body:JSON.stringify({instructions:jobSearchInstr,specialInstructions,apiKeyOverride:anthropicKey,serperKeyOverride:serperKey,aiProvider})});
       if(abortRef.current) return;
       const data1=await safeJson(res1);
       if(!res1.ok){setSearchError((data1.error as string)||'Search failed in Pass 1.');setSearching(false);return;}
@@ -1744,6 +1744,7 @@ export default function Home() {
           apiKeyOverride:anthropicKey,
           serperKeyOverride:serperKey,
           titlesSearched:data1.titlesSearched||[],
+          aiProvider,
         })});
       if(abortRef.current) return;
       const data2=await safeJson(res2);
@@ -1806,7 +1807,7 @@ export default function Home() {
       body:JSON.stringify({
         company:excl.company,title:excl.title,
         applyUrl:excl.applyUrl,jobDescUrl:excl.jobDescUrl,careersUrl:excl.careersUrl,
-        candidateProfile:profile,jdText:'',apiKeyOverride:anthropicKey,
+        candidateProfile:profile,jdText:'',apiKeyOverride:anthropicKey,aiProvider,
       }),
     }).then(r=>safeJson(r)).then(data=>{
       analyzeResultRef.current=data;

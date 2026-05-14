@@ -112,10 +112,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const { instructions, specialInstructions, apiKeyOverride, serperKeyOverride } = req.body;
 
-  const anthropicKey = apiKeyOverride || process.env.ANTHROPIC_API_KEY;
+  const aiKey = apiKeyOverride || process.env.ANTHROPIC_API_KEY;
   const serperKey = serperKeyOverride || process.env.SERPER_API_KEY;
 
-  if (!anthropicKey) return res.status(400).json({ error: 'No Anthropic API key configured. Add it in Settings.' });
+  if (!aiKey) return res.status(400).json({ error: 'No API key configured. Add it in Settings.' });
   if (!serperKey) return res.status(400).json({ error: 'No Serper API key configured. Add it in Settings.' });
 
   const userTitles = extractTitles(instructions);
