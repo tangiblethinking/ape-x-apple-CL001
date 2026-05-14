@@ -550,7 +550,7 @@ function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,onComp
               onChange={e=>{const f=e.target.files?.[0];if(f){handleResumeUpload(f).then(()=>setWizResumeMeta(getUploadedResumeMeta()));}}}/>
             <div onClick={()=>fileRef.current?.click()} style={{border:`2px dashed ${(wizResumeMeta||uploadMsg.startsWith('✓'))?'#2a6644':'#d6d0c4'}`,borderRadius:8,padding:'20px 24px',textAlign:'center',cursor:'pointer',background:(wizResumeMeta||uploadMsg.startsWith('✓'))?'#f0faf5':'#fff'}}>
               <Upload size={26} color={(wizResumeMeta||uploadMsg.startsWith('✓'))?'#2a6644':'#7a7469'} style={{marginBottom:8}}/>
-              <div style={{fontWeight:700,fontSize:14,marginBottom:3,color:'#0f0f0f'}}>Choose Resume File</div>
+              <div style={{fontWeight:700,fontSize:14,marginBottom:3,color:'#000',letterSpacing:'-0.01em'}}>Choose Resume File</div>
               <div style={{fontSize:11,color:'#7a7469'}}>HTML · DOCX · PDF (text-based)</div>
             </div>
             {uploading&&<div style={{fontSize:12,color:'#b5882e',display:'flex',alignItems:'center',gap:6,marginTop:8}}><Clock size={13}/>Extracting profile data...</div>}
@@ -558,8 +558,8 @@ function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,onComp
               <div style={{display:'flex',alignItems:'center',gap:5,background:'#d6ede2',borderRadius:4,padding:'7px 10px',marginTop:8}}>
                 <CheckCircle size={12} color="#2a6644" fill="#2a6644"/>
                 <div style={{flex:1,textAlign:'left'}}>
-                  <div style={{fontSize:11,fontWeight:700,color:'#2a6644'}}>{wizResumeMeta.filename}</div>
-                  <div style={{fontSize:10,color:'#4a8c66'}}>Loaded {fmtDateTime(wizResumeMeta.uploadedAt)}</div>
+                  <div style={{fontSize:11,fontWeight:700,color:'#1A7A3C'}}>{wizResumeMeta.filename}</div>
+                  <div style={{fontSize:10,color:'rgba(26,122,60,0.7)'}}>Loaded {fmtDateTime(wizResumeMeta.uploadedAt)}</div>
                 </div>
                 <button onClick={e=>{e.stopPropagation();fileRef.current?.click();}} style={{background:'none',border:'none',cursor:'pointer',fontSize:11,color:'#7a7469',textDecoration:'underline'}}>Re-upload</button>
               </div>
@@ -585,15 +585,15 @@ function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,onComp
               }}/>
             <div onClick={()=>wizCoverMeta?undefined:coverFileRef.current?.click()} style={{border:`2px dashed ${wizCoverMeta?'#2a6644':'#d6d0c4'}`,borderRadius:8,padding:'20px 24px',textAlign:'center',cursor:wizCoverMeta?'default':'pointer',background:wizCoverMeta?'#f0faf5':'#fff'}}>
               <Upload size={26} color={wizCoverMeta?'#2a6644':'#7a7469'} style={{marginBottom:8}}/>
-              <div style={{fontWeight:700,fontSize:14,marginBottom:3,color:'#0f0f0f'}}>Choose Cover Letter File</div>
+              <div style={{fontWeight:700,fontSize:14,marginBottom:3,color:'#000',letterSpacing:'-0.01em'}}>Choose Cover Letter File</div>
               <div style={{fontSize:11,color:'#7a7469'}}>HTML · DOCX · PDF (text-based)</div>
             </div>
             {wizCoverMeta&&(
               <div style={{display:'flex',alignItems:'center',gap:5,background:'#d6ede2',borderRadius:4,padding:'7px 10px',marginTop:8}}>
                 <CheckCircle size={12} color="#2a6644" fill="#2a6644"/>
                 <div style={{flex:1,textAlign:'left'}}>
-                  <div style={{fontSize:11,fontWeight:700,color:'#2a6644'}}>{wizCoverMeta.filename}</div>
-                  <div style={{fontSize:10,color:'#4a8c66'}}>Loaded {fmtDateTime(wizCoverMeta.uploadedAt)}</div>
+                  <div style={{fontSize:11,fontWeight:700,color:'#1A7A3C'}}>{wizCoverMeta.filename}</div>
+                  <div style={{fontSize:10,color:'rgba(26,122,60,0.7)'}}>Loaded {fmtDateTime(wizCoverMeta.uploadedAt)}</div>
                 </div>
                 <button onClick={e=>{e.stopPropagation();coverFileRef.current?.click();}} style={{background:'none',border:'none',cursor:'pointer',fontSize:11,color:'#7a7469',textDecoration:'underline'}}>Re-upload</button>
               </div>
@@ -884,32 +884,32 @@ function UploadCard({type,meta,onUpload}:{type:'resume'|'cover';meta:UploadMeta|
     finally{setLoading(false);if(inputRef.current)inputRef.current.value='';}
   };
   return (
-    <div style={{background:'#fff',border:`2px dashed ${meta?'#2a6644':'#d6d0c4'}`,borderRadius:8,padding:'22px 18px',textAlign:'center',cursor:'pointer',transition:'border-color 0.2s'}}
+    <div style={{background:'#fff',border:`1.5px dashed ${meta?'#34C759':'rgba(60,60,67,0.25)'}`,borderRadius:16,padding:'22px 18px',textAlign:'center',cursor:'pointer',transition:'all 0.2s',boxShadow:'0 1px 4px rgba(0,0,0,0.04)'}}
       onClick={meta?undefined:()=>inputRef.current?.click()}>
       <input ref={inputRef} type="file" accept=".html,.htm,.pdf,.docx" style={{display:'none'}} onChange={handle}/>
-      <div style={{color:meta?'#2a6644':'#7a7469',marginBottom:7,display:'flex',justifyContent:'center'}}>
+      <div style={{color:meta?'#34C759':'rgba(60,60,67,0.4)',marginBottom:7,display:'flex',justifyContent:'center'}}>
         {type==='resume'?<FileText size={24}/>:<Mail size={24}/>}
       </div>
-      <div style={{fontWeight:700,fontSize:14,marginBottom:3,color:'#0f0f0f'}}>{type==='resume'?'Upload Resume':'Upload Cover Letter'}</div>
-      <div style={{fontSize:11,color:'#7a7469',marginBottom:10}}>Text-only PDF · DOCX · HTML</div>
-      {loading&&<div style={{fontSize:12,color:'#b5882e'}}>Parsing file...</div>}
+      <div style={{fontWeight:700,fontSize:14,marginBottom:3,color:'#000',letterSpacing:'-0.01em'}}>{type==='resume'?'Upload Resume':'Upload Cover Letter'}</div>
+      <div style={{fontSize:11,color:'rgba(60,60,67,0.5)',marginBottom:10}}>Text-only PDF · DOCX · HTML</div>
+      {loading&&<div style={{fontSize:12,color:'#FF9500'}}>Parsing file...</div>}
       {error&&<div style={{fontSize:12,color:'#c8460a',marginTop:6}}>{error}</div>}
       {meta&&!loading&&(
-        <div style={{display:'flex',alignItems:'center',gap:5,justifyContent:'center',background:'#d6ede2',borderRadius:4,padding:'7px 10px',marginTop:6}}>
+        <div style={{display:'flex',alignItems:'center',gap:5,justifyContent:'center',background:'rgba(52,199,89,0.1)',borderRadius:10,padding:'7px 10px',marginTop:6}}>
           <CheckCircle size={12} color="#2a6644" fill="#2a6644"/>
           <div style={{textAlign:'left'}}>
-            <div style={{fontSize:11,fontWeight:700,color:'#2a6644'}}>{meta.filename}</div>
-            <div style={{fontSize:10,color:'#4a8c66'}}>Loaded {fmtDateTime(meta.uploadedAt)}</div>
+            <div style={{fontSize:11,fontWeight:700,color:'#1A7A3C'}}>{meta.filename}</div>
+            <div style={{fontSize:10,color:'rgba(26,122,60,0.7)'}}>Loaded {fmtDateTime(meta.uploadedAt)}</div>
           </div>
         </div>
       )}
       {!meta&&!loading&&(
-        <div style={{display:'inline-flex',alignItems:'center',gap:5,background:'#0f0f0f',color:'#fff',borderRadius:4,padding:'6px 12px',fontSize:12,fontWeight:600}}>
+        <div style={{display:'inline-flex',alignItems:'center',gap:5,background:'#007AFF',color:'#fff',borderRadius:50,padding:'6px 14px',fontSize:12,fontWeight:600}}>
           <Upload size={11}/>Choose File
         </div>
       )}
       {meta&&!loading&&(
-        <button onClick={e=>{e.stopPropagation();inputRef.current?.click();}} style={{background:'none',border:'none',cursor:'pointer',fontSize:11,color:'#7a7469',textDecoration:'underline',marginTop:8,display:'block',width:'100%',textAlign:'center'}}>
+        <button onClick={e=>{e.stopPropagation();inputRef.current?.click();}} style={{background:'none',border:'none',cursor:'pointer',fontSize:11,color:'rgba(60,60,67,0.5)',marginTop:8,display:'block',width:'100%',textAlign:'center'}}>
           Re-upload
         </button>
       )}
@@ -921,12 +921,12 @@ function UploadCard({type,meta,onUpload}:{type:'resume'|'cover';meta:UploadMeta|
 function HowToDrawer({onClose}:{onClose:()=>void;}) {
   return (
     <>
-      <div onClick={onClose} style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.3)',zIndex:300}}/>
-      <div style={{position:'fixed',top:64,right:0,bottom:0,width:420,maxWidth:'95vw',background:'#fff',zIndex:400,boxShadow:'-8px 0 32px rgba(0,0,0,0.15)',overflowY:'auto',animation:'slideInRight 0.25s ease'}}>
-        <div style={{padding:'18px 22px 14px',borderBottom:'2px solid #0f0f0f',display:'flex',justifyContent:'space-between',alignItems:'flex-start',position:'sticky',top:0,background:'#fff',zIndex:10}}>
+      <div onClick={onClose} style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.35)',backdropFilter:'blur(6px)',WebkitBackdropFilter:'blur(6px)',zIndex:300}}/>
+      <div style={{position:'fixed',top:52,right:0,bottom:0,width:400,maxWidth:'95vw',background:'rgba(255,255,255,0.96)',backdropFilter:'blur(20px)',WebkitBackdropFilter:'blur(20px)',zIndex:400,boxShadow:'-4px 0 40px rgba(0,0,0,0.12)',overflowY:'auto',animation:'slideInRight 0.25s cubic-bezier(0.32,0.72,0,1)'}}>
+        <div style={{padding:'16px 20px 12px',borderBottom:'0.5px solid rgba(60,60,67,0.2)',display:'flex',justifyContent:'space-between',alignItems:'flex-start',position:'sticky',top:0,background:'rgba(255,255,255,0.96)',backdropFilter:'blur(20px)',WebkitBackdropFilter:'blur(20px)',zIndex:10}}>
           <div>
-            <div style={{fontSize:10,letterSpacing:'0.18em',textTransform:'uppercase',color:'#c8460a',fontWeight:700,marginBottom:5}}>Complete Guide</div>
-            <h2 style={{fontFamily:'DM Serif Display,serif',fontSize:20,fontWeight:400}}>How to Use</h2>
+            <div style={{fontSize:11,letterSpacing:'0.06em',textTransform:'uppercase',color:'rgba(60,60,67,0.5)',fontWeight:600,marginBottom:4}}>Complete Guide</div>
+            <h2 style={{fontSize:18,fontWeight:700,letterSpacing:'-0.02em',color:'#000'}}>How to Use</h2>
           </div>
           <button onClick={onClose} style={{background:'none',border:'none',cursor:'pointer',color:'#777',padding:4}}><X size={20}/></button>
         </div>
@@ -1235,72 +1235,72 @@ function JobCard({job,applied,onGenerate,generatingType,onReturnToExcluded}:{
 }) {
   const [open,setOpen]=useState(false);
   return (
-    <div style={{background:'#fff',border:`1px solid ${applied?'#b5882e':'#d6d0c4'}`,borderRadius:2,overflow:'hidden',transition:'box-shadow 0.2s,transform 0.2s'}}
-      onMouseEnter={e=>{(e.currentTarget as HTMLDivElement).style.boxShadow='4px 6px 0 #0f0f0f';(e.currentTarget as HTMLDivElement).style.transform='translate(-2px,-2px)';}}
-      onMouseLeave={e=>{(e.currentTarget as HTMLDivElement).style.boxShadow='';(e.currentTarget as HTMLDivElement).style.transform='';}}>
+    <div style={{background:'#fff',border:`0.5px solid ${applied?'rgba(255,149,0,0.4)':'rgba(60,60,67,0.12)'}`,borderRadius:16,overflow:'hidden',transition:'box-shadow 0.2s,transform 0.1s',boxShadow:'0 1px 4px rgba(0,0,0,0.06)'}}
+      onMouseEnter={e=>{(e.currentTarget as HTMLDivElement).style.boxShadow='0 6px 20px rgba(0,0,0,0.1)';(e.currentTarget as HTMLDivElement).style.transform='translateY(-1px)';}}
+      onMouseLeave={e=>{(e.currentTarget as HTMLDivElement).style.boxShadow='0 1px 4px rgba(0,0,0,0.06)';(e.currentTarget as HTMLDivElement).style.transform='';}}>
       {applied&&<div style={{background:'#f2e8cb',padding:'4px 14px',fontSize:11,fontWeight:700,color:'#b5882e',letterSpacing:'0.06em',borderBottom:'1px solid #e8d89a',display:'flex',alignItems:'center',gap:6}}><CheckCircle size={11} fill="#b5882e" color="#b5882e"/>ALREADY APPLIED</div>}
       <div style={{padding:'16px 18px 12px',cursor:'pointer',display:'flex',justifyContent:'space-between',gap:12}} onClick={()=>setOpen(!open)}>
         <div style={{flex:1,minWidth:0}}>
           <div style={{fontSize:11,letterSpacing:'0.1em',textTransform:'uppercase',fontWeight:700,color:'#c8460a',marginBottom:3,display:'flex',alignItems:'center',gap:5}}><Building2 size={11}/>{job.company}</div>
-          <div style={{fontFamily:'DM Serif Display,serif',fontSize:17,color:'#0f0f0f',lineHeight:1.2,marginBottom:8}}>{job.title}</div>
+          <div style={{fontSize:17,fontWeight:700,letterSpacing:'-0.02em',color:'#000',lineHeight:1.2,marginBottom:8}}>{job.title}</div>
           <div style={{display:'flex',flexWrap:'wrap',gap:5}}>
             {job.isRemote&&<span style={{background:'#d6ede2',color:'#2a6644',fontSize:10,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',padding:'2px 7px',borderRadius:3,display:'flex',alignItems:'center',gap:3}}><MapPin size={9}/>Remote</span>}
             {job.isHybrid&&<span style={{background:'#f2e8cb',color:'#b5882e',fontSize:10,fontWeight:700,letterSpacing:'0.06em',padding:'2px 7px',borderRadius:3,display:'flex',alignItems:'center',gap:3}}><MapPin size={9}/>Hybrid{(job as SavedJob&{location?:string}).location&&(job as SavedJob&{location?:string}).location!=='N/A'&&(job as SavedJob&{location?:string}).location!==''?` · ${(job as SavedJob&{location?:string}).location}`:''}</span>}
             {(job as SavedJob&{isOnsite?:boolean;location?:string}).isOnsite&&<span style={{background:'#e8e4f5',color:'#4a1a80',fontSize:10,fontWeight:700,letterSpacing:'0.06em',padding:'2px 7px',borderRadius:3,display:'flex',alignItems:'center',gap:3}}><Building2 size={9}/>Office{(job as SavedJob&{location?:string}).location&&(job as SavedJob&{location?:string}).location!=='N/A'&&(job as SavedJob&{location?:string}).location!==''?` · ${(job as SavedJob&{location?:string}).location}`:''}</span>}
-            {(job.industry||[]).map(ind=><span key={ind} style={{background:'#dde8f5',color:'#1a4fd8',fontSize:10,fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',padding:'2px 7px',borderRadius:3}}>{ind}</span>)}
+            {(job.industry||[]).map(ind=><span key={ind} style={{background:'rgba(0,122,255,0.1)',color:'#005BD3',fontSize:10,fontWeight:600,padding:'3px 8px',borderRadius:50}}>{ind}</span>)}
           </div>
-          <div style={{marginTop:9,fontSize:11,color:'#7a7469',display:'flex',alignItems:'center',gap:4}}>
+          <div style={{marginTop:9,fontSize:11,color:'#007AFF',display:'flex',alignItems:'center',gap:4,fontWeight:500}}>
             {open?<ChevronUp size={11}/>:<ChevronDown size={11}/>}{open?'Hide details':'View full details'}
           </div>
         </div>
         <div style={{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:7,flexShrink:0}}>
           <div style={{width:48,height:48,borderRadius:'50%',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',fontWeight:700,
-            ...(job.rating>=8?{background:'#d6ede2',color:'#2a6644',border:'2px solid #2a6644'}:job.rating>=6?{background:'#f2e8cb',color:'#b5882e',border:'2px solid #b5882e'}:{background:'#f5d5c8',color:'#c8460a',border:'2px solid #c8460a'})}}>
+            ...(job.rating>=8?{background:'rgba(52,199,89,0.12)',color:'#1A7A3C',border:'1.5px solid rgba(52,199,89,0.4)'}:job.rating>=6?{background:'rgba(255,149,0,0.1)',color:'#B56000',border:'1.5px solid rgba(255,149,0,0.35)'}:{background:'rgba(255,59,48,0.1)',color:'#D70015',border:'1.5px solid rgba(255,59,48,0.3)'})}}>
             <Star size={9} fill="currentColor"/><span style={{fontSize:14,lineHeight:1}}>{job.rating}</span>
           </div>
           <div style={{textAlign:'right'}}>
-            <div style={{fontSize:13,fontWeight:700,display:'flex',alignItems:'center',gap:3,justifyContent:'flex-end'}}><DollarSign size={11}/>{job.salaryDisplay}</div>
-            <div style={{fontSize:10,color:'#7a7469'}}>{job.salaryNote}</div>
+            <div style={{fontSize:13,fontWeight:700,display:'flex',alignItems:'center',gap:3,justifyContent:'flex-end',letterSpacing:'-0.01em',color:'#000'}}><DollarSign size={11}/>{job.salaryDisplay}</div>
+            <div style={{fontSize:10,color:'rgba(60,60,67,0.5)'}}>{job.salaryNote}</div>
           </div>
         </div>
       </div>
       {open&&(
-        <div style={{borderTop:'1px solid #d6d0c4',padding:'16px 18px',background:'#faf9f6'}}>
+        <div style={{borderTop:'0.5px solid rgba(60,60,67,0.12)',padding:'16px 18px',background:'#F2F2F7'}}>
           <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(240px,1fr))',gap:16,marginBottom:16}}>
-            <div><div style={{fontSize:10,fontWeight:700,letterSpacing:'0.15em',textTransform:'uppercase',color:'#7a7469',marginBottom:5}}>Role Summary</div><p style={{fontSize:13,color:'#3a3730',lineHeight:1.65}}>{job.roleSummary}</p></div>
-            <div><div style={{fontSize:10,fontWeight:700,letterSpacing:'0.15em',textTransform:'uppercase',color:'#7a7469',marginBottom:5}}>Why You Fit ({job.rating}/10)</div><ul style={{paddingLeft:15,fontSize:13,color:'#3a3730',lineHeight:1.65}}>{(job.whyYouFit||[]).map((b,i)=><li key={i} style={{marginBottom:2}}>{b}</li>)}</ul></div>
-            <div><div style={{fontSize:10,fontWeight:700,letterSpacing:'0.15em',textTransform:'uppercase',color:'#7a7469',marginBottom:5}}>Requirements</div><ul style={{paddingLeft:15,fontSize:13,color:'#3a3730',lineHeight:1.65}}>{(job.requirements||[]).map((r,i)=><li key={i} style={{marginBottom:2}}>{r}</li>)}</ul></div>
+            <div><div style={{fontSize:11,fontWeight:600,letterSpacing:'0.04em',textTransform:'uppercase',color:'rgba(60,60,67,0.5)',marginBottom:5}}>Role Summary</div><p style={{fontSize:13,color:'rgba(60,60,67,0.85)',lineHeight:1.65}}>{job.roleSummary}</p></div>
+            <div><div style={{fontSize:11,fontWeight:600,letterSpacing:'0.04em',textTransform:'uppercase',color:'rgba(60,60,67,0.5)',marginBottom:5}}>Why You Fit ({job.rating}/10)</div><ul style={{paddingLeft:15,fontSize:13,color:'#3a3730',lineHeight:1.65}}>{(job.whyYouFit||[]).map((b,i)=><li key={i} style={{marginBottom:2}}>{b}</li>)}</ul></div>
+            <div><div style={{fontSize:11,fontWeight:600,letterSpacing:'0.04em',textTransform:'uppercase',color:'rgba(60,60,67,0.5)',marginBottom:5}}>Requirements</div><ul style={{paddingLeft:15,fontSize:13,color:'#3a3730',lineHeight:1.65}}>{(job.requirements||[]).map((r,i)=><li key={i} style={{marginBottom:2}}>{r}</li>)}</ul></div>
             <div>
-              <div style={{fontSize:10,fontWeight:700,letterSpacing:'0.15em',textTransform:'uppercase',color:'#7a7469',marginBottom:5}}>Company Info</div>
+              <div style={{fontSize:11,fontWeight:600,letterSpacing:'0.04em',textTransform:'uppercase',color:'rgba(60,60,67,0.5)',marginBottom:5}}>Company Info</div>
               <p style={{fontSize:13,color:'#3a3730',lineHeight:1.65,marginBottom:8}}>{job.companyInfo}</p>
-              {job.goldFlags?.length>0&&<div style={{marginBottom:6}}><div style={{fontSize:10,fontWeight:700,letterSpacing:'0.1em',textTransform:'uppercase',color:'#2a6644',marginBottom:3,display:'flex',alignItems:'center',gap:4}}><Flag size={10} fill="#2a6644"/>Gold Flags</div><ul style={{paddingLeft:15,fontSize:12,color:'#2a6644',lineHeight:1.6}}>{job.goldFlags.map((f,i)=><li key={i}>{f}</li>)}</ul></div>}
-              {job.redFlags?.length>0&&<div><div style={{fontSize:10,fontWeight:700,letterSpacing:'0.1em',textTransform:'uppercase',color:'#c8460a',marginBottom:3,display:'flex',alignItems:'center',gap:4}}><Flag size={10} fill="#c8460a"/>Red Flags</div><ul style={{paddingLeft:15,fontSize:12,color:'#c8460a',lineHeight:1.6}}>{job.redFlags.map((f,i)=><li key={i}>{f}</li>)}</ul></div>}
+              {job.goldFlags?.length>0&&<div style={{marginBottom:6}}><div style={{fontSize:10,fontWeight:700,letterSpacing:'0.1em',textTransform:'uppercase',color:'#2a6644',marginBottom:3,display:'flex',alignItems:'center',gap:4}}><Flag size={10} fill="#2a6644"/>Gold Flags</div><ul style={{paddingLeft:15,fontSize:12,color:'#1A7A3C',lineHeight:1.6}}>{job.goldFlags.map((f,i)=><li key={i}>{f}</li>)}</ul></div>}
+              {job.redFlags?.length>0&&<div><div style={{fontSize:10,fontWeight:700,letterSpacing:'0.1em',textTransform:'uppercase',color:'#c8460a',marginBottom:3,display:'flex',alignItems:'center',gap:4}}><Flag size={10} fill="#c8460a"/>Red Flags</div><ul style={{paddingLeft:15,fontSize:12,color:'#D70015',lineHeight:1.6}}>{job.redFlags.map((f,i)=><li key={i}>{f}</li>)}</ul></div>}
             </div>
           </div>
-          <div style={{borderTop:'1px solid #d6d0c4',paddingTop:12,display:'flex',gap:8,flexWrap:'wrap',alignItems:'center'}}>
-            <a href={job.applyUrl} target="_blank" rel="noreferrer" style={{display:'flex',alignItems:'center',gap:5,padding:'7px 13px',background:'#0f0f0f',color:'#fff',borderRadius:4,fontSize:12,fontWeight:600,textDecoration:'none'}}><ExternalLink size={12}/>Apply</a>
-            <a href={job.careersUrl} target="_blank" rel="noreferrer" style={{display:'flex',alignItems:'center',gap:5,padding:'7px 13px',border:'1.5px solid #d6d0c4',borderRadius:4,fontSize:12,fontWeight:600,textDecoration:'none',color:'#0f0f0f'}}><Briefcase size={12}/>Careers</a>
-            <a href={job.aboutUrl} target="_blank" rel="noreferrer" style={{display:'flex',alignItems:'center',gap:5,padding:'7px 13px',border:'1.5px solid #d6d0c4',borderRadius:4,fontSize:12,fontWeight:600,textDecoration:'none',color:'#0f0f0f'}}><ExternalLink size={12}/>About</a>
+          <div style={{borderTop:'0.5px solid rgba(60,60,67,0.12)',paddingTop:12,display:'flex',gap:8,flexWrap:'wrap',alignItems:'center'}}>
+            <a href={job.applyUrl} target="_blank" rel="noreferrer" style={{display:'flex',alignItems:'center',gap:5,padding:'7px 14px',background:'#007AFF',color:'#fff',borderRadius:50,fontSize:12,fontWeight:600,textDecoration:'none'}}><ExternalLink size={12}/>Apply</a>
+            <a href={job.careersUrl} target="_blank" rel="noreferrer" style={{display:'flex',alignItems:'center',gap:5,padding:'7px 14px',background:'rgba(120,120,128,0.1)',border:'none',borderRadius:50,fontSize:12,fontWeight:600,textDecoration:'none',color:'#000'}}><Briefcase size={12}/>Careers</a>
+            <a href={job.aboutUrl} target="_blank" rel="noreferrer" style={{display:'flex',alignItems:'center',gap:5,padding:'7px 14px',background:'rgba(120,120,128,0.1)',border:'none',borderRadius:50,fontSize:12,fontWeight:600,textDecoration:'none',color:'#000'}}><ExternalLink size={12}/>About</a>
             <div style={{marginLeft:'auto',display:'flex',gap:8,flexWrap:'wrap'}}>
               <div style={{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:3}}>
-                <button onClick={()=>onGenerate(job,'resume')} disabled={generatingType==='resume'} style={{display:'flex',alignItems:'center',gap:5,padding:'7px 13px',background:'#dde8f5',color:'#1a4fd8',border:'none',borderRadius:4,fontSize:12,fontWeight:600,cursor:'pointer'}}>
+                <button onClick={()=>onGenerate(job,'resume')} disabled={generatingType==='resume'} style={{display:'flex',alignItems:'center',gap:5,padding:'7px 14px',background:'rgba(0,122,255,0.1)',color:'#005BD3',border:'none',borderRadius:50,fontSize:12,fontWeight:600,cursor:'pointer'}}>
                   <FileText size={13} fill="#1a4fd8"/>{generatingType==='resume'?'Generating...':'Create Resume'}
                 </button>
-                {generatingType==='resume'&&<span style={{fontSize:10,color:'#b5882e',fontWeight:600}}>generation in progress...</span>}
+                {generatingType==='resume'&&<span style={{fontSize:10,color:'#FF9500',fontWeight:500}}>generating...</span>}
               </div>
               <div style={{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:3}}>
-                <button onClick={()=>onGenerate(job,'coverLetter')} disabled={generatingType==='coverLetter'} style={{display:'flex',alignItems:'center',gap:5,padding:'7px 13px',background:'#f3e8ff',color:'#6b21a8',border:'none',borderRadius:4,fontSize:12,fontWeight:600,cursor:'pointer'}}>
+                <button onClick={()=>onGenerate(job,'coverLetter')} disabled={generatingType==='coverLetter'} style={{display:'flex',alignItems:'center',gap:5,padding:'7px 14px',background:'rgba(175,82,222,0.1)',color:'#7A1AAA',border:'none',borderRadius:50,fontSize:12,fontWeight:600,cursor:'pointer'}}>
                   <Mail size={13} fill="#6b21a8"/>{generatingType==='coverLetter'?'Generating...':'Create Cover Letter'}
                 </button>
-                {generatingType==='coverLetter'&&<span style={{fontSize:10,color:'#b5882e',fontWeight:600}}>generation in progress...</span>}
+                {generatingType==='coverLetter'&&<span style={{fontSize:10,color:'#FF9500',fontWeight:500}}>generating...</span>}
               </div>
             </div>
           </div>
-          <div style={{marginTop:9,paddingTop:9,borderTop:'1px solid #d6d0c4',fontSize:11,color:'#7a7469',display:'flex',alignItems:'center',gap:6,flexWrap:'wrap'}}>
+          <div style={{marginTop:9,paddingTop:9,borderTop:'0.5px solid rgba(60,60,67,0.12)',fontSize:11,color:'rgba(60,60,67,0.5)',display:'flex',alignItems:'center',gap:6,flexWrap:'wrap'}}>
             <CheckCircle size={11}/>{job.auditLabel}<span>·</span><Clock size={11}/>{job.postedDate}<span>·</span>
-            <a href={job.jobDescUrl} target="_blank" rel="noreferrer" style={{color:'#1a4fd8',textDecoration:'none',display:'flex',alignItems:'center',gap:3}}><ExternalLink size={11}/>View JD</a>
+            <a href={job.jobDescUrl} target="_blank" rel="noreferrer" style={{color:'#007AFF',textDecoration:'none',display:'flex',alignItems:'center',gap:3,fontWeight:500}}><ExternalLink size={11}/>View JD</a>
             {(job as SavedJob&{manuallyAdded?:boolean}).manuallyAdded&&onReturnToExcluded&&(
-              <><span>·</span><button onClick={(e)=>{e.stopPropagation();onReturnToExcluded(job);}} style={{background:'none',border:'none',cursor:'pointer',color:'#7a7469',fontSize:11,padding:0,display:'flex',alignItems:'center',gap:3,textDecoration:'underline'}}>Return to Excluded</button></>
+              <><span>·</span><button onClick={(e)=>{e.stopPropagation();onReturnToExcluded(job);}} style={{background:'none',border:'none',cursor:'pointer',color:'rgba(60,60,67,0.5)',fontSize:11,padding:0,display:'flex',alignItems:'center',gap:3}}>Return to Excluded</button></>
             )}
           </div>
         </div>
@@ -1891,15 +1891,15 @@ export default function Home() {
 
       {/* History Full Modal */}
       {showHistoryFull&&(
-        <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.6)',zIndex:800,display:'flex',alignItems:'center',justifyContent:'center',padding:24}}>
-          <div style={{background:'#fff',borderRadius:4,width:'100%',maxWidth:440,boxShadow:'0 8px 32px rgba(0,0,0,0.2)',padding:28,textAlign:'center'}}>
-            <AlertTriangle size={36} color="#c8460a" style={{marginBottom:14}}/>
-            <h2 style={{fontFamily:'DM Serif Display,serif',fontSize:22,marginBottom:8}}>Saved Search List Full</h2>
-            <p style={{fontSize:13,color:'#5a5449',lineHeight:1.7,marginBottom:24}}>You have 5 saved searches. Continuing will auto-delete the oldest search, or you can remove one of your choice.</p>
+        <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.4)',backdropFilter:'blur(12px)',WebkitBackdropFilter:'blur(12px)',zIndex:800,display:'flex',alignItems:'center',justifyContent:'center',padding:20}}>
+          <div style={{background:'rgba(255,255,255,0.96)',borderRadius:20,width:'100%',maxWidth:420,boxShadow:'0 20px 60px rgba(0,0,0,0.2)',padding:28,textAlign:'center',border:'0.5px solid rgba(255,255,255,0.8)'}}>
+            <div style={{width:52,height:52,borderRadius:'50%',background:'rgba(255,149,0,0.12)',display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 14px'}}><AlertTriangle size={24} color="#FF9500"/></div>
+            <h2 style={{fontSize:20,fontWeight:700,letterSpacing:'-0.02em',marginBottom:8,color:'#000'}}>Saved Search List Full</h2>
+            <p style={{fontSize:13,color:'rgba(60,60,67,0.6)',lineHeight:1.7,marginBottom:24}}>You have 5 saved searches. Continuing will auto-delete the oldest search, or you can remove one of your choice.</p>
             <div style={{display:'flex',gap:10,justifyContent:'center',flexWrap:'wrap'}}>
-              <button onClick={()=>{setShowHistoryFull(false);setShowDeleteOldest(true);}} style={{padding:'10px 16px',background:'#c8460a',color:'#fff',border:'none',borderRadius:4,cursor:'pointer',fontWeight:700,fontSize:13}}>Proceed (delete oldest)</button>
-              <button onClick={()=>{setShowHistoryFull(false);setPendingSearch(false);}} style={{padding:'10px 16px',border:'1.5px solid #d6d0c4',borderRadius:4,background:'transparent',cursor:'pointer',fontWeight:600,fontSize:13}}>Cancel</button>
-              <button onClick={()=>{setShowHistoryFull(false);setShowManageHistory(true);}} style={{padding:'10px 16px',background:'#0f0f0f',color:'#fff',border:'none',borderRadius:4,cursor:'pointer',fontWeight:700,fontSize:13}}>Delete a Search</button>
+              <button onClick={()=>{setShowHistoryFull(false);setShowDeleteOldest(true);}} style={{padding:'10px 18px',background:'#FF9500',color:'#fff',border:'none',borderRadius:50,cursor:'pointer',fontWeight:600,fontSize:13}}>Proceed (delete oldest)</button>
+              <button onClick={()=>{setShowHistoryFull(false);setPendingSearch(false);}} style={{padding:'10px 18px',background:'rgba(120,120,128,0.1)',color:'#000',border:'none',borderRadius:50,cursor:'pointer',fontWeight:600,fontSize:13}}>Cancel</button>
+              <button onClick={()=>{setShowHistoryFull(false);setShowManageHistory(true);}} style={{padding:'10px 18px',background:'rgba(0,0,0,0.08)',color:'#000',border:'none',borderRadius:50,cursor:'pointer',fontWeight:600,fontSize:13}}>Delete a Search</button>
             </div>
           </div>
         </div>
