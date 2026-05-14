@@ -23,6 +23,7 @@ import {
   exportAppData, validateImport, importAppData,
   getWizardSeen, setWizardSeen,
   SavedJob, AppliedJob, StatusEntry, UploadMeta,
+  getAIProvider, setAIProvider, AIProvider,
 } from '../lib/storage';
 import {
   DEFAULT_PROFILE, buildJobSearchInstructions,
@@ -30,6 +31,10 @@ import {
   DEFAULT_JOB_SEARCH_INSTRUCTIONS, DEFAULT_RESUME_INSTRUCTIONS,
   DEFAULT_COVER_LETTER_INSTRUCTIONS, CandidateProfile,
 } from '../lib/instructions';
+import {
+  validateAPIKey, getAPIKeyPlaceholder, getAPIKeyNote,
+  getProviderName, getProviderSetupURL, getProviderSetupSteps,
+} from '../lib/ai-providers';
 
 type Tab = 'search' | 'board' | 'applied' | 'settings';
 type GenerateType = 'resume' | 'coverLetter';
@@ -162,7 +167,7 @@ function WelcomeModal({onBegin,onSkip}:{onBegin:()=>void;onSkip:()=>void;}) {
           <div style={{display:'inline-flex',alignItems:'center',justifyContent:'center',width:64,height:64,borderRadius:18,background:'linear-gradient(135deg,#007AFF,#5856D6)',marginBottom:20,boxShadow:'0 4px 16px rgba(0,122,255,0.35)'}}>
             <Sparkles size={28} color="#fff"/>
           </div>
-          <h1 style={{fontSize:26,fontWeight:700,letterSpacing:'-0.03em',marginBottom:12,lineHeight:1.2,color:'#000'}}>Welcome to <span style={{color:'#007AFF'}}>Ape-X</span></h1>
+          <h1 style={{fontSize:26,fontWeight:700,letterSpacing:'-0.03em',marginBottom:12,lineHeight:1.2,color:'#000'}}>Welcome to <span style={{color:'#007AFF'}}>Ape X Job Hunt</span></h1>
           <p style={{fontSize:14,color:'rgba(60,60,67,0.65)',lineHeight:1.7,marginBottom:28}}>
             Your intelligent job search assistant. Let&apos;s set up your profile to find the best opportunities for you.
           </p>
@@ -176,7 +181,7 @@ function WelcomeModal({onBegin,onSkip}:{onBegin:()=>void;onSkip:()=>void;}) {
           </div>
           <div style={{marginTop:24}}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/Ape-X.png" alt="Ape-X" style={{width:'100%',maxWidth:320,height:'auto',maxHeight:220,objectFit:'contain',display:'block',margin:'0 auto',opacity:0.85}}/>
+            <img src="/ape-x-full-logo.png" alt="Ape X" style={{width:'100%',maxWidth:320,height:'auto',maxHeight:220,objectFit:'contain',display:'block',margin:'0 auto',opacity:0.85}}/>
           </div>
         </div>
       </div>
@@ -262,11 +267,12 @@ function SalarySlider({min,max,onChange}:{min:number;max:number;onChange:(min:nu
 
 
 // ── Setup Wizard ───────────────────────────────────────────────────────────
-function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,onComplete,onClose,onOpenHowTo}:{
+function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,initialProvider,onComplete,onClose,onOpenHowTo}:{
   initialProfile:CandidateProfile;
   initialAnthropicKey:string;
   initialSerperKey:string;
-  onComplete:(p:CandidateProfile,anthKey:string,serpKey:string)=>void;
+  initialProvider:AIProvider;
+  onComplete:(p:CandidateProfile,anthKey:string,serpKey:string,provider:AIProvider)=>void;
   onClose:()=>void;
   onOpenHowTo:()=>void;
 }) {
@@ -274,6 +280,7 @@ function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,onComp
   const [profile,setProfile]=useState<CandidateProfile>({...initialProfile});
   const [wizAnthropicKey,setWizAnthropicKey]=useState(initialAnthropicKey);
   const [wizSerperKey,setWizSerperKey]=useState(initialSerperKey);
+  const [wizProvider,setWizProvider]=useState<AIProvider>(initialProvider);
   const [uploading,setUploading]=useState(false);
   const [uploadMsg,setUploadMsg]=useState('');
   const [extracting,setExtracting]=useState(false);
@@ -294,10 +301,10 @@ function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,onComp
   // Store raw resume text for extraction on Next
   const resumeTextRef=useRef<string>('');
 
-  const TOTAL_STEPS=7;
+  const TOTAL_STEPS=8; // Increased from 7 to 8 for provider selection
   const pct=Math.round(((step)/TOTAL_STEPS)*100);
 
-  const anthropicValid=wizAnthropicKey.startsWith('sk-ant-')&&wizAnthropicKey.length>20;
+  const anthropicValid=validateAPIKey(wizProvider,wizAnthropicKey);
   const serperValid=wizSerperKey.length>10;
   const keysComplete=anthropicValid&&serperValid;
 
@@ -403,12 +410,13 @@ function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,onComp
   const finish=()=>{
     setLocalApiKey(wizAnthropicKey);
     setLocalSerperKey(wizSerperKey);
+    setAIProvider(wizProvider);
     saveProfile(profile);
     const js=buildJobSearchInstructions(profile);
     const res=buildResumeInstructions(profile);
     const cv=buildCoverLetterInstructions(profile);
     saveInstructions({jobSearch:js,resume:res,coverLetter:cv});
-    onComplete(profile,wizAnthropicKey,wizSerperKey);
+    onComplete(profile,wizAnthropicKey,wizSerperKey,wizProvider);
   };
 
   const inp=(style?:React.CSSProperties):React.CSSProperties=>({
@@ -457,8 +465,72 @@ function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,onComp
 
   const stepContent=()=>{
     switch(step){
-      // ── STEP 0: API KEYS ──────────────────────────────────────────────────
+      // ── STEP 0: PROVIDER SELECTION ───────────────────────────────────────────
       case 0: return (
+        <div>
+          <h2 style={{fontSize:24,marginBottom:8}}>Choose Your AI Provider</h2>
+          <p style={{fontSize:14,color:'rgba(60,60,67,0.6)',lineHeight:1.7,marginBottom:24}}>
+            Select which AI service you'd like to use. You can change this anytime in Settings.
+          </p>
+
+          <div style={{display:'flex',flexDirection:'column',gap:12}}>
+            {/* Claude option */}
+            <button
+              onClick={()=>setWizProvider('claude')}
+              style={{
+                background:wizProvider==='claude'?'rgba(0,122,255,0.1)':'#F2F2F7',
+                border:wizProvider==='claude'?'2px solid #007AFF':'2px solid transparent',
+                borderRadius:14,
+                padding:20,
+                textAlign:'left',
+                cursor:'pointer',
+                transition:'all 0.2s',
+              }}
+            >
+              <div style={{display:'flex',alignItems:'flex-start',justifyContent:'space-between',marginBottom:8}}>
+                <div>
+                  <h3 style={{fontSize:17,fontWeight:700,color:'#000',marginBottom:4}}>Claude (Anthropic)</h3>
+                  <p style={{fontSize:13,color:'rgba(60,60,67,0.7)',lineHeight:1.6}}>
+                    Advanced reasoning and instruction following. Requires credit ($5–10 minimum).
+                  </p>
+                </div>
+                {wizProvider==='claude'&&<CheckCircle size={20} color="#007AFF" fill="#007AFF"/>}
+              </div>
+            </button>
+
+            {/* Gemini option */}
+            <button
+              onClick={()=>setWizProvider('gemini')}
+              style={{
+                background:wizProvider==='gemini'?'rgba(0,122,255,0.1)':'#F2F2F7',
+                border:wizProvider==='gemini'?'2px solid #007AFF':'2px solid transparent',
+                borderRadius:14,
+                padding:20,
+                textAlign:'left',
+                cursor:'pointer',
+                transition:'all 0.2s',
+              }}
+            >
+              <div style={{display:'flex',alignItems:'flex-start',justifyContent:'space-between',marginBottom:8}}>
+                <div>
+                  <h3 style={{fontSize:17,fontWeight:700,color:'#000',marginBottom:4}}>Gemini (Google)</h3>
+                  <p style={{fontSize:13,color:'rgba(60,60,67,0.7)',lineHeight:1.6}}>
+                    Fast and capable. Generous free tier available.
+                  </p>
+                </div>
+                {wizProvider==='gemini'&&<CheckCircle size={20} color="#007AFF" fill="#007AFF"/>}
+              </div>
+            </button>
+          </div>
+
+          <div style={{marginTop:20,padding:14,background:'rgba(0,122,255,0.05)',borderRadius:10,fontSize:12,color:'rgba(60,60,67,0.7)',lineHeight:1.6}}>
+            💡 <strong>Tip:</strong> Both providers work great. Choose based on your budget and API access.
+          </div>
+        </div>
+      );
+
+      // ── STEP 1: API KEYS ──────────────────────────────────────────────────
+      case 1: return (
         <div>
           <h2 style={{fontSize:24,marginBottom:6}}>Set Up Your API Keys</h2>
           <p style={{fontSize:14,color:'rgba(60,60,67,0.65)',lineHeight:1.7,marginBottom:4}}>
@@ -468,14 +540,14 @@ function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,onComp
             <HelpCircle size={13}/>See full setup guide in How to Use
           </button>
 
-          {/* Anthropic card */}
+          {/* AI Provider card */}
           <div style={{background:'#F2F2F7',borderRadius:14,padding:18,marginBottom:16,border:'0.5px solid #e8e4da'}}>
             <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:12}}>
               <div>
-                <div style={{fontSize:13,fontWeight:700,color:'#000000',marginBottom:2}}>1. Anthropic API Key</div>
+                <div style={{fontSize:13,fontWeight:700,color:'#000000',marginBottom:2}}>1. {getProviderName(wizProvider)} API Key</div>
                 <div style={{fontSize:11,color:'rgba(60,60,67,0.6)'}}>Powers AI search processing and document generation</div>
               </div>
-              <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noreferrer"
+              <a href={getProviderSetupURL(wizProvider)} target="_blank" rel="noreferrer"
                 style={{display:'flex',alignItems:'center',gap:5,padding:'7px 12px',background:'#000000',color:'#fff',borderRadius:10,fontSize:12,fontWeight:700,textDecoration:'none',whiteSpace:'nowrap'}}>
                 Get Key <ExternalLink size={11}/>
               </a>
@@ -483,25 +555,25 @@ function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,onComp
             <div style={{fontSize:12,color:'rgba(60,60,67,0.85)',lineHeight:1.8,marginBottom:14}}>
               <div style={{fontWeight:700,fontSize:11,letterSpacing:'0.1em',textTransform:'uppercase',color:'rgba(60,60,67,0.6)',marginBottom:6}}>Steps to get your key:</div>
               <ol style={{paddingLeft:18,display:'flex',flexDirection:'column',gap:4}}>
-                <li>Go to <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noreferrer" style={{color:'#007AFF'}}>console.anthropic.com/settings/keys</a> in a new tab</li>
-                <li>Sign in or create a free Anthropic account</li>
-                <li>Click <strong>"Create Key"</strong> — name it anything (e.g. "job-board")</li>
-                <li>Copy the key — it starts with <code style={{background:'#e8e4da',padding:'1px 5px',borderRadius:10,fontSize:11}}>sk-ant-</code></li>
-                <li>Add a small amount of credit ($5–$10) under Billing — required to use the API</li>
-                <li>Paste the key below</li>
+                {getProviderSetupSteps(wizProvider).map((step,i)=>(
+                  <li key={i} dangerouslySetInnerHTML={{__html:step.replace(/console\.anthropic\.com\/settings\/keys/g,'<a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noreferrer" style="color:#007AFF">console.anthropic.com/settings/keys</a>').replace(/aistudio\.google\.com\/app\/apikey/g,'<a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noreferrer" style="color:#007AFF">aistudio.google.com/app/apikey</a>')}}/>
+                ))}
               </ol>
             </div>
             <KeyField
-              label="Anthropic API Key"
+              label={`${getProviderName(wizProvider)} API Key`}
               value={wizAnthropicKey}
               onChange={setWizAnthropicKey}
               valid={anthropicValid}
-              placeholder="sk-ant-api03-..."
-              note='Key must start with "sk-ant-" — check that you copied the full key'
+              placeholder={getAPIKeyPlaceholder(wizProvider)}
+              note={getAPIKeyNote(wizProvider)}
             />
+            <button onClick={()=>setStep(0)} style={{marginTop:10,fontSize:12,color:'#007AFF',background:'none',border:'none',cursor:'pointer',textDecoration:'underline'}}>
+              ← Change provider
+            </button>
           </div>
 
-          {/* Serper card */}
+          {/* Serper card (unchanged) */}
           <div style={{background:'#F2F2F7',borderRadius:14,padding:18,border:'0.5px solid #e8e4da'}}>
             <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:12}}>
               <div>
@@ -535,8 +607,8 @@ function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,onComp
         </div>
       );
 
-      // ── STEP 1: RESUME ───────────────────────────────────────────────────
-      case 1: return (
+      // ── STEP 2: RESUME (was Step 1) ───────────────────────────────────────
+      case 2: return (
         <div>
           <h2 style={{fontSize:24,marginBottom:8}}>Upload Your Documents</h2>
           <p style={{fontSize:14,color:'rgba(60,60,67,0.6)',lineHeight:1.7,marginBottom:20}}>
@@ -608,8 +680,8 @@ function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,onComp
       );
 
 
-      // ── STEP 2: PROFILE ──────────────────────────────────────────────────
-      case 2: {
+      // ── STEP 3: PROFILE ──────────────────────────────────────────────────
+      case 3: {
         const didNotFind=(k:string)=>extractedFields.size>0&&!extractedFields.has(k);
         const hint=(k:string)=>didNotFind(k)?(
           <div style={{fontSize:10,color:'#FF9500',marginTop:3,display:'flex',alignItems:'center',gap:3}}>
@@ -649,8 +721,8 @@ function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,onComp
         );
       }
 
-      // ── STEP 3: LINKS ────────────────────────────────────────────────────
-      case 3: return (
+      // ── STEP 4: LINKS ────────────────────────────────────────────────────
+      case 4: return (
         <div>
           <h2 style={{fontSize:24,marginBottom:8}}>Your Links</h2>
           <p style={{fontSize:14,color:'rgba(60,60,67,0.65)',marginBottom:20}}>Add your professional links. These appear in all instructions and generated documents.</p>
@@ -702,8 +774,8 @@ function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,onComp
         </div>
       );
 
-      // ── STEP 4: TITLES ───────────────────────────────────────────────────
-      case 4: return (
+      // ── STEP 5: TITLES ───────────────────────────────────────────────────
+      case 5: return (
         <div>
           <h2 style={{fontSize:24,marginBottom:8}}>Target Job Titles</h2>
           <p style={{fontSize:14,color:'rgba(60,60,67,0.65)',marginBottom:8}}>What roles are you targeting? These drive your search queries.</p>
@@ -742,8 +814,8 @@ function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,onComp
         </div>
       );
 
-      // ── STEP 5: WORK PREFS ───────────────────────────────────────────────
-      case 5: return (
+      // ── STEP 6: WORK PREFS ───────────────────────────────────────────────
+      case 6: return (
         <div>
           <h2 style={{fontSize:24,marginBottom:8}}>Work Preferences</h2>
           <p style={{fontSize:14,color:'rgba(60,60,67,0.65)',marginBottom:20}}>Select your preferred work arrangements and locations.</p>
@@ -772,8 +844,8 @@ function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,onComp
         </div>
       );
 
-      // ── STEP 6: SALARY ───────────────────────────────────────────────────
-      case 6: return (
+      // ── STEP 7: SALARY ───────────────────────────────────────────────────
+      case 7: return (
         <div>
           <h2 style={{fontSize:24,marginBottom:8}}>Salary Range</h2>
           <p style={{fontSize:14,color:'rgba(60,60,67,0.65)',marginBottom:8}}>Set your target compensation range. This filters job results and informs search queries.</p>
@@ -787,7 +859,7 @@ function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,onComp
     }
   };
 
-  const stepLabels=['API Keys','Resume','Profile','Links','Titles','Work','Salary'];
+  const stepLabels=['Provider','API Keys','Resume','Profile','Links','Titles','Work','Salary'];
   const isLastStep=step===TOTAL_STEPS-1;
   const canFinish=keysComplete;
 
@@ -831,12 +903,12 @@ function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,onComp
         {/* Step content */}
         {!extracting&&<div style={{padding:'24px',flex:1}}>{stepContent()}</div>}
 
-        {/* Keys warning banner — shown on all steps after step 0 if keys missing */}
-        {step>0&&!keysComplete&&(
+        {/* Keys warning banner — shown on all steps after step 1 if keys missing */}
+        {step>1&&!keysComplete&&(
           <div style={{margin:'0 22px 14px',padding:'12px 16px',background:'rgba(255,149,0,0.08)',border:'0.5px solid rgba(255,149,0,0.3)',borderRadius:12,fontSize:12,color:'#B56000',display:'flex',alignItems:'center',gap:10,flexWrap:'wrap'}}>
             <AlertTriangle size={14} color="#007AFF"/>
             <span>API keys required to finish.</span>
-            <button onClick={()=>setStep(0)} style={{color:'#FF9500',background:'none',border:'none',cursor:'pointer',fontWeight:700,fontSize:12,textDecoration:'underline',padding:0}}>
+            <button onClick={()=>setStep(1)} style={{color:'#FF9500',background:'none',border:'none',cursor:'pointer',fontWeight:700,fontSize:12,textDecoration:'underline',padding:0}}>
               Go to API Keys step
             </button>
             <span>·</span>
@@ -852,7 +924,7 @@ function SetupWizard({initialProfile,initialAnthropicKey,initialSerperKey,onComp
             <ChevronLeft size={14}/>{step===0?'Cancel':'Back'}
           </button>
           {!isLastStep
-            ?<button onClick={()=>step===1?extractAndAdvance():setStep(s=>s+1)} disabled={extracting} style={{display:'flex',alignItems:'center',gap:5,padding:'10px 22px',background:extracting?'#C7C7CC':'#007AFF',color:'#fff',border:'none',borderRadius:50,cursor:extracting?'not-allowed':'pointer',fontWeight:600,fontSize:13}}>
+            ?<button onClick={()=>step===2?extractAndAdvance():setStep(s=>s+1)} disabled={extracting} style={{display:'flex',alignItems:'center',gap:5,padding:'10px 22px',background:extracting?'#C7C7CC':'#007AFF',color:'#fff',border:'none',borderRadius:50,cursor:extracting?'not-allowed':'pointer',fontWeight:600,fontSize:13}}>
               Next<ChevronRight size={14}/>
             </button>
             :<div style={{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:6}}>
@@ -1022,7 +1094,7 @@ function GenerateModal({job,type,onClose,instructions,apiKey}:{
     try{
       const res=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},
         body:JSON.stringify({
-          type,jobData:job,jobDescription:jd,instructions,apiKeyOverride:apiKey,
+          type,jobData:job,jobDescription:jd,instructions,apiKeyOverride:apiKey,aiProvider,
           uploadedTemplate:type==='resume'?getUploadedResume():getUploadedCover(),
         })});
       const data=await safeJson(res);
@@ -1322,7 +1394,7 @@ function SaveImportModal({onClose,onImportComplete}:{onClose:()=>void;onImportCo
     const url=URL.createObjectURL(blob);
     const a=document.createElement('a');
     const ts=new Date().toISOString().slice(0,10);
-    a.href=url;a.download=`ape-x-job-board-${ts}.json`;a.click();
+    a.href=url;a.download=`ape-x-job-hunt-${ts}.json`;a.click();
     URL.revokeObjectURL(url);
   };
 
@@ -1361,7 +1433,7 @@ function SaveImportModal({onClose,onImportComplete}:{onClose:()=>void;onImportCo
       <div style={{background:'#fff',borderRadius:10,maxWidth:380,width:'100%',padding:28,textAlign:'center',boxShadow:'0 8px 32px rgba(0,0,0,0.2)'}}>
         <AlertTriangle size={36} color="#007AFF" style={{marginBottom:14}}/>
         <h2 style={{fontSize:22,marginBottom:10}}>File is Not Valid</h2>
-        <p style={{fontSize:13,color:'rgba(60,60,67,0.65)',lineHeight:1.7,marginBottom:20}}>This file doesn't appear to be a valid Ape-X Job Board export. No settings were changed.</p>
+        <p style={{fontSize:13,color:'rgba(60,60,67,0.65)',lineHeight:1.7,marginBottom:20}}>This file doesn't appear to be a valid Ape X Job Hunt export. No settings were changed.</p>
         <button onClick={()=>setPhase('menu')} style={{padding:'10px 24px',background:'#000000',color:'#fff',border:'none',borderRadius:10,cursor:'pointer',fontWeight:700,fontSize:14}}>Try Again</button>
         <button onClick={onClose} style={{marginLeft:10,padding:'10px 20px',border:'0.5px solid rgba(60,60,67,0.2)',borderRadius:10,background:'transparent',cursor:'pointer',fontWeight:600,fontSize:14}}>Cancel</button>
       </div>
@@ -1436,59 +1508,59 @@ function TermsModal({onClose}:{onClose:()=>void;}) {
   const sections=[
     {
       title:'1. Overview',
-      body:`This application ("Ape-X Job Board," "the App") is a personal productivity tool developed and operated by Ape X LLC ("Developer," "we," "us"). By accessing or using the App, you agree to be bound by these Terms and Conditions. If you do not agree, do not use the App.`,
+      body:`This application ("Ape X Job Hunt," "the App") is a personal productivity tool. By accessing or using the App, you agree to be bound by these Terms and Conditions. If you do not agree, do not use the App.`,
     },
     {
       title:'2. Nature of the Application',
-      body:`The App is a client-side web application designed to assist users in discovering, tracking, and applying to job opportunities. The App interfaces with third-party services including the Anthropic Claude API and Serper search API to perform job searches and generate application documents. The Developer is not a recruiter, staffing agency, or employment service of any kind.`,
+      body:`The App is a client-side web application designed to assist users in discovering, tracking, and applying to job opportunities. The App interfaces with third-party services including AI APIs and search APIs to perform job searches and generate application documents.`,
     },
     {
       title:'3. No Employment Guarantee',
-      body:`The App does not guarantee employment outcomes. Job listings surfaced by the App are sourced from third-party job boards and search engines. Ape X LLC makes no representations regarding the accuracy, completeness, timeliness, or availability of any job listing, salary estimate, or company information presented in the App. All job data should be independently verified before acting upon it.`,
+      body:`The App does not guarantee employment outcomes. Job listings surfaced by the App are sourced from third-party job boards and search engines. No representations are made regarding the accuracy, completeness, timeliness, or availability of any job listing, salary estimate, or company information presented in the App. All job data should be independently verified before acting upon it.`,
     },
     {
       title:'4. Local Storage & Data Handling',
-      body:`The App stores all user data exclusively in your browser's localStorage. This includes: your candidate profile, uploaded resume and cover letter content, job search results, application history, instruction sets, search history, and API keys. No data is transmitted to or stored on any Ape X LLC servers. The Developer has no access to your stored data. When you clear your browser data or use the Reset All function, all stored data is permanently deleted. It is your responsibility to export and back up your data using the Save/Import feature.`,
+      body:`The App stores all user data exclusively in your browser's localStorage. This includes: your candidate profile, uploaded resume and cover letter content, job search results, application history, instruction sets, search history, and API keys. No data is transmitted to or stored on external servers. When you clear your browser data or use the Reset All function, all stored data is permanently deleted. It is your responsibility to export and back up your data using the Save/Import feature.`,
     },
     {
       title:'5. API Keys & Third-Party Services',
-      body:`You are solely responsible for obtaining, securing, and managing your own API keys for Anthropic and Serper. API keys are stored in your browser's localStorage and, if exported, in your export file. Treat your API keys as passwords — do not share them or store them in unsecured locations. Ape X LLC is not responsible for unauthorized use of your API keys, charges incurred through your API accounts, or changes to third-party API pricing, availability, or terms of service. Your use of those services is governed by their respective terms.`,
+      body:`You are solely responsible for obtaining, securing, and managing your own API keys. API keys are stored in your browser's localStorage and, if exported, in your export file. Treat your API keys as passwords — do not share them or store them in unsecured locations. The App is not responsible for unauthorized use of your API keys, charges incurred through your API accounts, or changes to third-party API pricing, availability, or terms of service. Your use of those services is governed by their respective terms.`,
     },
     {
       title:'6. Intellectual Property',
-      body:`The App's source code, design, and original content are the intellectual property of Ape X LLC. Job listings, company information, and external content remain the property of their respective owners. The App does not claim ownership over any third-party content it surfaces. Generated resume and cover letter documents are produced based on your own input data and templates; you retain all rights to documents generated using your own materials.`,
+      body:`Job listings, company information, and external content remain the property of their respective owners. The App does not claim ownership over any third-party content it surfaces. Generated resume and cover letter documents are produced based on your own input data and templates; you retain all rights to documents generated using your own materials.`,
     },
     {
       title:'7. Disclaimer of Warranties',
-      body:`THE APP IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. APE X LLC DOES NOT WARRANT THAT THE APP WILL BE UNINTERRUPTED, ERROR-FREE, OR FREE OF HARMFUL COMPONENTS. YOUR USE OF THE APP IS ENTIRELY AT YOUR OWN RISK.`,
+      body:`THE APP IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. THE APP DOES NOT WARRANT THAT IT WILL BE UNINTERRUPTED, ERROR-FREE, OR FREE OF HARMFUL COMPONENTS. YOUR USE OF THE APP IS ENTIRELY AT YOUR OWN RISK.`,
     },
     {
       title:'8. Limitation of Liability',
-      body:`TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, APE X LLC AND ITS MEMBERS, OFFICERS, EMPLOYEES, AND AGENTS SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES ARISING FROM YOUR USE OF OR INABILITY TO USE THE APP, INCLUDING BUT NOT LIMITED TO LOSS OF DATA, LOSS OF EMPLOYMENT OPPORTUNITIES, OR LOSS OF BUSINESS, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. IN NO EVENT SHALL APE X LLC'S TOTAL LIABILITY EXCEED $0, AS THE APP IS PROVIDED FREE OF CHARGE.`,
+      body:`TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, THE APP AND ITS OPERATORS SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES ARISING FROM YOUR USE OF OR INABILITY TO USE THE APP, INCLUDING BUT NOT LIMITED TO LOSS OF DATA, LOSS OF EMPLOYMENT OPPORTUNITIES, OR LOSS OF BUSINESS, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.`,
     },
     {
       title:'9. Indemnification',
-      body:`You agree to indemnify, defend, and hold harmless Ape X LLC and its members, officers, employees, and agents from and against any claims, liabilities, damages, losses, and expenses, including reasonable legal fees, arising out of or in any way connected with: (a) your access to or use of the App; (b) your violation of these Terms; (c) your violation of any third-party right, including any intellectual property or privacy right; or (d) any claim that your use of the App caused damage to a third party.`,
+      body:`You agree to indemnify, defend, and hold harmless the App and its operators from and against any claims, liabilities, damages, losses, and expenses, including reasonable legal fees, arising out of or in any way connected with: (a) your access to or use of the App; (b) your violation of these Terms; (c) your violation of any third-party right, including any intellectual property or privacy right; or (d) any claim that your use of the App caused damage to a third party.`,
     },
     {
       title:'10. Third-Party Services',
-      body:`The App integrates with Anthropic's Claude API and Serper's search API. Your use of these services is subject to their own terms of service and privacy policies. Ape X LLC is not affiliated with, endorsed by, or in partnership with Anthropic, Serper, or any job board or employer whose listings may appear in the App. Links to third-party websites are provided for convenience only; Ape X LLC does not endorse and is not responsible for the content of those sites.`,
+      body:`The App integrates with third-party AI and search APIs. Your use of these services is subject to their own terms of service and privacy policies. The App is not affiliated with, endorsed by, or in partnership with any third-party service provider, job board, or employer whose listings may appear in the App. Links to third-party websites are provided for convenience only; the App does not endorse and is not responsible for the content of those sites.`,
     },
     {
       title:'11. Privacy',
-      body:`The App does not collect, transmit, or store any personal data on external servers. All data remains in your browser's localStorage on your device. The App does not use cookies, tracking pixels, analytics services, or advertising. The only external network requests made by the App are direct API calls to Anthropic and Serper using your own API keys, and web search requests to Serper on your behalf when you initiate a job search.`,
+      body:`The App does not collect, transmit, or store any personal data on external servers. All data remains in your browser's localStorage on your device. The App does not use cookies, tracking pixels, analytics services, or advertising. The only external network requests made by the App are direct API calls to your configured services using your own API keys, and web search requests on your behalf when you initiate a job search.`,
     },
     {
       title:'12. Modifications',
-      body:`Ape X LLC reserves the right to modify these Terms at any time. Continued use of the App following any modification constitutes acceptance of the revised Terms. It is your responsibility to review these Terms periodically.`,
+      body:`The App operators reserve the right to modify these Terms at any time. Continued use of the App following any modification constitutes acceptance of the revised Terms. It is your responsibility to review these Terms periodically.`,
     },
     {
       title:'13. Governing Law',
-      body:`These Terms shall be governed by and construed in accordance with the laws of the State of Arizona, without regard to its conflict of law provisions. Any dispute arising from these Terms or your use of the App shall be subject to the exclusive jurisdiction of the state and federal courts located in Maricopa County, Arizona.`,
+      body:`These Terms shall be governed by and construed in accordance with applicable law. Any dispute arising from these Terms or your use of the App shall be subject to applicable jurisdiction.`,
     },
     {
       title:'14. Contact',
-      body:`For questions regarding these Terms, please contact Ape X LLC through the developer's portfolio at uxapex.com.`,
+      body:`For questions regarding these Terms, please contact the application developer.`,
     },
   ];
 
@@ -1499,13 +1571,13 @@ function TermsModal({onClose}:{onClose:()=>void;}) {
           <div>
             <div style={{fontSize:10,letterSpacing:'0.18em',textTransform:'uppercase',color:'#007AFF',fontWeight:700,marginBottom:6}}>Legal</div>
             <h1 style={{fontSize:26,fontWeight:400,lineHeight:1.1}}>Terms &amp; Conditions</h1>
-            <p style={{fontSize:12,color:'rgba(60,60,67,0.6)',marginTop:6}}>Ape X LLC · Ape-X Job Board Application · Last updated May 2026</p>
+            <p style={{fontSize:12,color:'rgba(60,60,67,0.6)',marginTop:6}}>Ape X Job Hunt Application · Last updated May 2026</p>
           </div>
           <button onClick={onClose} style={{background:'none',border:'none',cursor:'pointer',color:'rgba(60,60,67,0.5)',padding:4,flexShrink:0}}><X size={22}/></button>
         </div>
         <div style={{padding:'24px 28px 32px',display:'flex',flexDirection:'column',gap:22,overflowY:'auto',flex:1}}>
           <div style={{background:'rgba(255,59,48,0.04)',border:'0.5px solid rgba(255,59,48,0.2)',borderRadius:10,padding:'12px 16px',fontSize:12,color:'#D70015',lineHeight:1.7,flexShrink:0}}>
-            <strong>Please read these Terms carefully.</strong> By using the Ape-X Job Board application, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions and all applicable laws.
+            <strong>Please read these Terms carefully.</strong> By using the Ape X Job Hunt application, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions and all applicable laws.
           </div>
           {sections.map(s=>(
             <div key={s.title}>
@@ -1514,7 +1586,7 @@ function TermsModal({onClose}:{onClose:()=>void;}) {
             </div>
           ))}
           <div style={{borderTop:'0.5px solid rgba(60,60,67,0.2)',paddingTop:18,fontSize:12,color:'rgba(60,60,67,0.6)',lineHeight:1.7}}>
-            These Terms and Conditions were last updated May 2026 and are effective immediately. By continuing to use the Ape-X Job Board application, you agree to these terms in their entirety.
+            These Terms and Conditions were last updated May 2026 and are effective immediately. By continuing to use the Ape X Job Hunt application, you agree to these terms in their entirety.
           </div>
         </div>
         <div style={{padding:'16px 28px',borderTop:'0.5px solid rgba(60,60,67,0.2)',display:'flex',justifyContent:'flex-end',flexShrink:0,background:'#fff'}}>
@@ -1566,6 +1638,7 @@ export default function Home() {
   const [coverInstr,setCoverInstr]=useState('');
   const [anthropicKey,setAnthropicKey]=useState('');
   const [serperKey,setSerperKey]=useState('');
+  const [aiProvider,setAiProvider]=useState<AIProvider>('claude');
   const [keysSaved,setKeysSaved]=useState(false);
   const [instrSaved,setInstrSaved]=useState<string|null>(null);
   const [copied,setCopied]=useState<string|null>(null);
@@ -1584,6 +1657,7 @@ export default function Home() {
     setCoverInstr(saved?.coverLetter||DEFAULT_COVER_LETTER_INSTRUCTIONS);
     setJobs(getSavedJobs()); setAppliedJobs(getAppliedJobs());
     setAnthropicKey(getLocalApiKey()); setSerperKey(getLocalSerperKey());
+    setAiProvider(getAIProvider());
     setResumeMeta(getUploadedResumeMeta()); setCoverMeta(getUploadedCoverMeta());
     const p=getSavedProfile(); if(p) setProfile(p);
     setSearchHistory(getSearchHistory());
@@ -1811,10 +1885,11 @@ export default function Home() {
     setTab('search');
   };
 
-  const onWizardComplete=(p:CandidateProfile,anthKey:string,serpKey:string)=>{
+  const onWizardComplete=(p:CandidateProfile,anthKey:string,serpKey:string,provider:AIProvider)=>{
     // Persist keys to localStorage so they survive reload
     setLocalApiKey(anthKey);
     setLocalSerperKey(serpKey);
+    setAIProvider(provider);
     // Build and persist instructions
     const js=buildJobSearchInstructions(p);
     const res=buildResumeInstructions(p);
@@ -1822,7 +1897,7 @@ export default function Home() {
     saveInstructions({jobSearch:js,resume:res,coverLetter:cv});
     // Update React state
     setProfile(p);
-    setAnthropicKey(anthKey); setSerperKey(serpKey);
+    setAnthropicKey(anthKey); setSerperKey(serpKey); setAiProvider(provider);
     setJobSearchInstr(js);
     setResumeInstr(res);
     setCoverInstr(cv);
@@ -1879,7 +1954,7 @@ export default function Home() {
       {showSpecial&&<SpecialModal value={specialInstructions} onChange={setSpecialInstructions} onClose={()=>setShowSpecial(false)}/>}
       {showReset&&<ConfirmModal title="Are you certain?" body="This will reset ALL data including saved jobs, applied history, uploaded templates, API keys, profile, and all instructions. This is not reversible." confirmLabel="Reset Everything" onConfirm={doReset} onClose={()=>setShowReset(false)}/>}
       {resetInstrTarget&&<ConfirmModal title="Reset Instructions?" body={`This will reset your ${instrName(resetInstrTarget)} to the profile-based default. This is not reversible.`} confirmLabel="Reset" onConfirm={()=>resetSingleInstr(resetInstrTarget)} onClose={()=>setResetInstrTarget(null)}/>}
-      {showWizard&&<SetupWizard initialProfile={profile} initialAnthropicKey={anthropicKey} initialSerperKey={serperKey} onComplete={onWizardComplete} onClose={()=>setShowWizard(false)} onOpenHowTo={()=>setShowHowTo(true)}/>}
+      {showWizard&&<SetupWizard initialProfile={profile} initialAnthropicKey={anthropicKey} initialSerperKey={serperKey} initialProvider={aiProvider} onComplete={onWizardComplete} onClose={()=>setShowWizard(false)} onOpenHowTo={()=>setShowHowTo(true)}/>}
       {showSuccess&&<SuccessModal onSearch={()=>{setShowSuccess(false);runSearch();}} onClose={()=>setShowSuccess(false)}/>}
       {showWelcome&&<WelcomeModal onBegin={()=>{setWizardSeen();setShowWelcome(false);setShowWizard(true);}} onSkip={()=>{setWizardSeen();setShowWelcome(false);}}/>}
       {showMobileFAB&&<MobileFAB instructions={jobSearchInstr} onClose={()=>setShowMobileFAB(false)}/>}
@@ -2003,7 +2078,7 @@ export default function Home() {
             <div style={{width:28,height:28,borderRadius:10,background:'linear-gradient(135deg,#007AFF,#5856D6)',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:'0 2px 8px rgba(0,122,255,0.3)'}}>
               <span style={{fontSize:14}}>🦍</span>
             </div>
-            <span style={{fontSize:15,fontWeight:700,letterSpacing:'-0.02em',color:'#000'}}>Ape-X</span>
+            <span style={{fontSize:15,fontWeight:700,letterSpacing:'-0.02em',color:'#000'}}>Ape X</span>
           </div>
           <div style={{width:0.5,height:24,background:'rgba(60,60,67,0.29)',marginRight:12}}/>
           {([
@@ -2101,7 +2176,7 @@ export default function Home() {
                   <button onClick={()=>setShowWizard(true)} style={{padding:'11px 24px',background:'#007AFF',color:'#fff',border:'none',borderRadius:50,cursor:'pointer',fontWeight:600,fontSize:14,marginBottom:24}}>Run Search Wizard</button>
                 </div>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/Ape-X.png" alt="Ape-X" style={{width:'100%',maxWidth:200,height:'auto',objectFit:'contain',mixBlendMode:'multiply'}}/>
+                <img src="/ape-x-full-logo.png" alt="Ape X" style={{width:'100%',maxWidth:200,height:'auto',objectFit:'contain'}}/>
               </div>
             ):(
               <>
@@ -2260,18 +2335,66 @@ export default function Home() {
               </div>
             </section>
 
+            {/* AI Provider */}
+            <section style={{background:'#fff',border:'0.5px solid rgba(60,60,67,0.15)',borderRadius:16,padding:22,marginBottom:16,boxShadow:'0 1px 4px rgba(0,0,0,0.05)'}}>
+              <h2 style={{fontSize:17,fontWeight:700,letterSpacing:'-0.01em',marginBottom:5,display:'flex',alignItems:'center',gap:7}}><Sparkles size={17}/>AI Provider</h2>
+              <p style={{fontSize:13,color:'rgba(60,60,67,0.6)',marginBottom:16,lineHeight:1.7}}>
+                Choose which AI service to use. You can switch anytime — just update your API key below.
+              </p>
+              <div style={{display:'flex',gap:10,marginBottom:14}}>
+                <button
+                  onClick={()=>{setAiProvider('claude');setAIProvider('claude');}}
+                  style={{
+                    flex:1,
+                    padding:14,
+                    background:aiProvider==='claude'?'rgba(0,122,255,0.1)':'#F2F2F7',
+                    border:aiProvider==='claude'?'2px solid #007AFF':'2px solid transparent',
+                    borderRadius:12,
+                    cursor:'pointer',
+                    textAlign:'left',
+                  }}
+                >
+                  <div style={{fontSize:14,fontWeight:700,color:'#000',marginBottom:4}}>Claude (Anthropic)</div>
+                  <div style={{fontSize:12,color:'rgba(60,60,67,0.7)'}}>Current selection</div>
+                </button>
+                <button
+                  onClick={()=>{setAiProvider('gemini');setAIProvider('gemini');}}
+                  style={{
+                    flex:1,
+                    padding:14,
+                    background:aiProvider==='gemini'?'rgba(0,122,255,0.1)':'#F2F2F7',
+                    border:aiProvider==='gemini'?'2px solid #007AFF':'2px solid transparent',
+                    borderRadius:12,
+                    cursor:'pointer',
+                    textAlign:'left',
+                  }}
+                >
+                  <div style={{fontSize:14,fontWeight:700,color:'#000',marginBottom:4}}>Gemini (Google)</div>
+                  <div style={{fontSize:12,color:'rgba(60,60,67,0.7)'}}>Free tier available</div>
+                </button>
+              </div>
+              {aiProvider==='gemini'&&(
+                <div style={{padding:12,background:'rgba(0,122,255,0.05)',borderRadius:10,fontSize:12,color:'rgba(60,60,67,0.7)',lineHeight:1.6}}>
+                  💡 Switched to Gemini — update your API key below to match.
+                </div>
+              )}
+            </section>
+
             {/* API Keys */}
             <section style={{background:'#fff',border:'0.5px solid rgba(60,60,67,0.15)',borderRadius:16,padding:22,marginBottom:16,boxShadow:'0 1px 4px rgba(0,0,0,0.05)'}}>
               <h2 style={{fontSize:17,fontWeight:700,letterSpacing:'-0.01em',marginBottom:5,display:'flex',alignItems:'center',gap:7}}><Settings size={17}/>API Keys</h2>
               <p style={{fontSize:13,color:'rgba(60,60,67,0.6)',marginBottom:16,lineHeight:1.7}}>
-                Stored in browser. UI keys override Vercel env vars.&nbsp;
-                <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noreferrer" style={{color:'#007AFF'}}>Get Anthropic key ↗</a>&nbsp;·&nbsp;
+                Stored in browser. Update keys when switching providers.&nbsp;
+                {aiProvider==='claude'
+                  ?<><a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noreferrer" style={{color:'#007AFF'}}>Get Claude key ↗</a></>
+                  :<><a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noreferrer" style={{color:'#007AFF'}}>Get Gemini key ↗</a></>
+                }&nbsp;·&nbsp;
                 <a href="https://serper.dev/api-key" target="_blank" rel="noreferrer" style={{color:'#007AFF'}}>Get Serper key ↗</a>
               </p>
               <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))',gap:12,marginBottom:14}}>
                 <div>
-                  <div style={{fontSize:11,fontWeight:600,letterSpacing:'0.04em',textTransform:'uppercase',color:'rgba(60,60,67,0.5)',marginBottom:5}}>Anthropic API Key</div>
-                  <input type="password" value={anthropicKey} onChange={e=>setAnthropicKey(e.target.value)} placeholder="sk-ant-..." style={{width:'100%'}}/>
+                  <div style={{fontSize:11,fontWeight:600,letterSpacing:'0.04em',textTransform:'uppercase',color:'rgba(60,60,67,0.5)',marginBottom:5}}>{getProviderName(aiProvider)} API Key</div>
+                  <input type="password" value={anthropicKey} onChange={e=>setAnthropicKey(e.target.value)} placeholder={getAPIKeyPlaceholder(aiProvider)} style={{width:'100%'}}/>
                 </div>
                 <div>
                   <div style={{fontSize:11,fontWeight:600,letterSpacing:'0.04em',textTransform:'uppercase',color:'rgba(60,60,67,0.5)',marginBottom:5}}>Serper API Key</div>

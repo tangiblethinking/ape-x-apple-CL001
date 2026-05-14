@@ -1,14 +1,16 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import fs from 'fs';
 import path from 'path';
+import { callAI, AIProvider } from '../../lib/ai-providers';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { type, jobData, jobDescription, instructions, apiKeyOverride, uploadedTemplate } = req.body;
+  const { type, jobData, jobDescription, instructions, apiKeyOverride, uploadedTemplate, aiProvider } = req.body;
+  const provider: AIProvider = aiProvider || 'claude';
 
   const anthropicKey = apiKeyOverride || process.env.ANTHROPIC_API_KEY;
-  if (!anthropicKey) return res.status(400).json({ error: 'No Anthropic API key configured.' });
+  if (!anthropicKey) return res.status(400).json({ error: 'No API key configured.' });
 
   // Prefer user-uploaded template from localStorage (passed in request body)
   // Fall back to blank public template shell
@@ -62,28 +64,19 @@ ${template}
 Generate the complete tailored HTML. Return only the HTML document.`;
 
   try {
-    const claudeRes = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'x-api-key': anthropicKey,
-        'anthropic-version': '2023-06-01',
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-5-20250929',
-        max_tokens: 16000,
-        system: systemPrompt,
-        messages: [{ role: 'user', content: userMessage }],
-      }),
-    });
+    const aiResponse = await callAI(
+      provider,
+      anthropicKey,
+      [{ role: 'user', content: userMessage }],
+      systemPrompt,
+      16000
+    );
 
-    if (!claudeRes.ok) {
-      const err = await claudeRes.json();
-      return res.status(claudeRes.status).json({ error: err.error?.message || 'Claude API error' });
+    if (aiResponse.error) {
+      return res.status(500).json({ error: aiResponse.error });
     }
 
-    const data = await claudeRes.json();
-    let html = data.content?.[0]?.text || '';
+    let html = aiResponse.text;
 
     // Strip any accidental markdown fences
     html = html.replace(/^```html\n?/i, '').replace(/^```\n?/, '').replace(/\n?```$/, '').trim();

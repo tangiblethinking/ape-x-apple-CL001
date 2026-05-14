@@ -68,6 +68,7 @@ const KEYS = {
   API_KEY: 'uxjb_api_key',
   SERPER_KEY: 'uxjb_serper_key',
   LAST_SEARCH: 'uxjb_last_search',
+  AI_PROVIDER: 'uxjb_ai_provider', // 'claude' | 'gemini'
 };
 
 
@@ -170,6 +171,15 @@ export function getLocalSerperKey(): string {
 export function setLocalSerperKey(key: string) {
   if (key) localStorage.setItem(KEYS.SERPER_KEY, key);
   else localStorage.removeItem(KEYS.SERPER_KEY);
+}
+
+// ── AI Provider ─────────────────────────────────────────────
+export type AIProvider = 'claude' | 'gemini';
+export function getAIProvider(): AIProvider {
+  return safe(() => (localStorage.getItem(KEYS.AI_PROVIDER) as AIProvider) || 'claude', 'claude');
+}
+export function setAIProvider(provider: AIProvider) {
+  localStorage.setItem(KEYS.AI_PROVIDER, provider);
 }
 
 // ── Last Search ─────────────────────────────────────────────

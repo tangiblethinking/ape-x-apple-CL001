@@ -6,7 +6,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
-        <title>Ape-X — Job Search</title>
+        <title>Ape X Job Hunt</title>
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         {/* SF Pro is system font; Inter as web fallback with similar metrics */}
         <link

@@ -1,9 +1,8 @@
-# Ape-X — Apple HIG Edition
+# Ape X Job Hunt — Apple HIG Edition
 
-A redesign of [Ape-X](https://github.com/tangiblethinking/ape-X) using Apple's Human Interface Guidelines.
+A white-label job search application using Apple's Human Interface Guidelines.
 
-**Live repo:** https://github.com/tangiblethinking/ape-x-apple  
-**Original repo:** https://github.com/tangiblethinking/ape-X
+**Current repo:** https://github.com/tangiblethinking/ape-x-apple-CL001
 
 ---
 
